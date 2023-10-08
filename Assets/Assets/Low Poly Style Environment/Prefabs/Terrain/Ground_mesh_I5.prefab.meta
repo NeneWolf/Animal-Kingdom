@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 752ad52646a591545814ae3436561de9
+timeCreated: 1474922129
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 72471
+  packageName: Low Poly Style Environment
+  packageVersion: 1.0
+  assetPath: Assets/Low Poly Style Environment/Prefabs/Terrain/Ground_mesh_I5.prefab
+  uploadId: 140443
