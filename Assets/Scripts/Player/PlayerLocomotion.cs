@@ -1,16 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.HID;
 
 public class PlayerLocomotion : MonoBehaviour
 {
     InputManager inputManager;
+    PlayerManager playerManager;
+    AnimatorManager animatorManager;
 
     Vector3 moveDirection;
     Transform cameraObject;
     Rigidbody playerRigidbody;
 
+    [Header("Movement Flags")]
     public bool isSprinting;
+    public bool isGrounded;
+    public bool isJumping;
+
+    [Header("Falling")]
+    [SerializeField]Transform groundChecker;
+    public LayerMask groundLayer;
+    public float rayCastHeightOffSet;
+    public float inAirTimer;
+    public float leapingVelocity;
+    public float fallingVelocity;
 
     [Header("Movement Speeds Stats")]
     public float walkingSpeed = 1.5f;
@@ -18,25 +32,43 @@ public class PlayerLocomotion : MonoBehaviour
     public float sprintingSpeed = 7f;
     public float turnSpeed = 15f;
 
-    
+    //[Header("Jump Speeds Stats")]
+    //public float gravityIntensity = -15f;
+    //public float jumpHeight = 3f;
+
+
 
     private void Awake()
     {
         inputManager = GetComponent<InputManager>();
         cameraObject = Camera.main.transform;
         playerRigidbody = GetComponent<Rigidbody>();
+        playerManager = GetComponent<PlayerManager>();
+        animatorManager = GetComponent<AnimatorManager>();
     }
-    
+
+    public void Movement()
+    {
+
+    }
+
     public void HandleAllMovement()
     {
+        HandleFallingAndLanding();
+
+        if (playerManager.isInteracting)
+            return;
+
         HandleMovement();
         HandleRotation();
     }
 
     private void HandleMovement()
     {
-        moveDirection = cameraObject.forward * inputManager.verticalInput;
-        moveDirection = moveDirection + cameraObject.right * inputManager.horizontalInput;
+        if (isJumping) return;
+
+        moveDirection = transform.forward * inputManager.verticalInput;
+        moveDirection = moveDirection + transform.right * inputManager.horizontalInput;
         moveDirection.Normalize();
         moveDirection.y = 0;
 
@@ -50,25 +82,83 @@ public class PlayerLocomotion : MonoBehaviour
             if (inputManager.moveAmount >= 0.5f) moveDirection *= runningSpeed;
             else moveDirection *= walkingSpeed;
         }
-
-
         Vector3 movementVelocity = moveDirection;
         playerRigidbody.velocity = movementVelocity;
     }
 
     private void HandleRotation()
     {
-        Vector3 targetDirection = Vector3.zero;
-        targetDirection = cameraObject.forward * inputManager.verticalInput;
-        targetDirection = targetDirection + cameraObject.right * inputManager.horizontalInput;
-        targetDirection.Normalize();
-        targetDirection.y = 0;
+        if (isJumping)
+            return;
 
-        if(targetDirection == Vector3.zero)
+        float horizontalInput = inputManager.horizontalInput;
+
+        if (Mathf.Abs(horizontalInput) > 0.1f)
+        {
+            float verticalInput = inputManager.verticalInput;
+
+            //Calculate the input direction relative to the camera
+            Vector3 cameraForward = cameraObject.forward;
+            Vector3 cameraRight = cameraObject.right;
+            cameraForward.y = 0;
+            cameraRight.y = 0;
+            cameraForward.Normalize();
+            cameraRight.Normalize();
+
+            Vector3 targetDirection = cameraForward * verticalInput + cameraRight * horizontalInput;
+            if (targetDirection == Vector3.zero)
             targetDirection = transform.forward;
 
-        Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
-        Quaternion playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
-        transform.rotation = playerRotation;
+            // Calculate the target rotation
+            Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+
+            //Smoothly interpolate between the current rotation and the target rotation
+            Quaternion playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+
+            //Apply the new rotation
+            transform.rotation = playerRotation;
+        }
     }
+
+    public void HandleFallingAndLanding()
+    {
+        RaycastHit hit;
+        Vector3 rayCastOrigin = groundChecker.position;
+        rayCastOrigin.y = rayCastOrigin.y + rayCastHeightOffSet;
+
+        if (!isGrounded && !isJumping)
+        {
+            if (!playerManager.isInteracting)
+                animatorManager.PlayTargetAnimation("Wolf_Fall", true);
+
+            inAirTimer = inAirTimer + Time.deltaTime;
+            playerRigidbody.AddForce(transform.forward * leapingVelocity);
+            playerRigidbody.AddForce(-Vector3.up * fallingVelocity * inAirTimer);
+        }
+
+        if (Physics.SphereCast(rayCastOrigin, 0.2f, Vector3.down, out hit, 0.5f, groundLayer))
+        {
+            if (!isGrounded && playerManager.isInteracting)
+            {
+                animatorManager.PlayTargetAnimation("Wolf_Land", true);
+            }
+            inAirTimer = 0;
+            isGrounded = true;
+            playerManager.isInteracting = false;
+        }
+        else
+        {
+            isGrounded = false;
+        }
+    }
+
+    public void HandleJump()
+    {
+        if (isGrounded)
+        {
+            animatorManager.animator.SetBool("isJumping", true);
+            animatorManager.PlayTargetAnimation("Wolf_Jump", false);
+        }
+    }
+
 }
