@@ -8,6 +8,7 @@ public class PlayerLocomotion : MonoBehaviour
     InputManager inputManager;
     PlayerManager playerManager;
     AnimatorManager animatorManager;
+    PlayerWeapon playerWeapon;
 
     Vector3 moveDirection;
     Transform cameraObject;
@@ -32,12 +33,6 @@ public class PlayerLocomotion : MonoBehaviour
     public float sprintingSpeed = 7f;
     public float turnSpeed = 15f;
 
-    //[Header("Jump Speeds Stats")]
-    //public float gravityIntensity = -15f;
-    //public float jumpHeight = 3f;
-
-
-
     private void Awake()
     {
         inputManager = GetComponent<InputManager>();
@@ -45,13 +40,8 @@ public class PlayerLocomotion : MonoBehaviour
         playerRigidbody = GetComponent<Rigidbody>();
         playerManager = GetComponent<PlayerManager>();
         animatorManager = GetComponent<AnimatorManager>();
+        playerWeapon = GetComponent<PlayerWeapon>();
     }
-
-    public void Movement()
-    {
-
-    }
-
     public void HandleAllMovement()
     {
         HandleFallingAndLanding();
@@ -158,6 +148,14 @@ public class PlayerLocomotion : MonoBehaviour
         {
             animatorManager.animator.SetBool("isJumping", true);
             animatorManager.PlayTargetAnimation("Wolf_Jump", false);
+        }
+    }
+
+    public void HandleFire()
+    {
+        if (isGrounded)
+        {
+            playerWeapon.Shoot(null);
         }
     }
 

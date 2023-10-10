@@ -22,6 +22,8 @@ public class InputManager : MonoBehaviour
     public bool bInput;
     public bool jumpInput;
 
+    public bool isFiring;
+
     private void Awake()
     {
         animatorManager = GetComponent<AnimatorManager>();
@@ -40,6 +42,8 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerActions.B.canceled += i => bInput = false;
 
             playerControls.PlayerActions.Jump.performed += i => jumpInput = true;
+
+            playerControls.PlayerActions.Fire.performed += i => isFiring = true;
         }
 
         playerControls.Enable();
@@ -58,6 +62,7 @@ public class InputManager : MonoBehaviour
         HandleCameraInput();
         HandleSprintingInput();
         HandleJumpInput();
+        HandleFire();
     }
 
     private void HandleMovementInput()
@@ -88,6 +93,15 @@ public class InputManager : MonoBehaviour
         {
             jumpInput = false;
             playerLocomotion.HandleJump();
+        }
+    }
+
+    private void HandleFire()
+    {
+        if(isFiring)
+        {
+            isFiring = false;
+            playerLocomotion.HandleFire();
         }
     }
 }

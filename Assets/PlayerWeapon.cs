@@ -4,23 +4,28 @@ using UnityEngine;
 
 public class PlayerWeapon : MonoBehaviour
 {
-    [SerializeField] private GameObject[] weapon;
-    [SerializeField] private GameObject spawnPoint;
+    [SerializeField] private List<GameObject> weapon;
+    [SerializeField] private GameObject WeaponOrbStorage;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        foreach(Transform child in WeaponOrbStorage.transform)
+        {
+            weapon.Add(child.gameObject);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Shoot(GameObject target)
     {
-        if(Input.GetKeyDown(KeyCode.R))
+        if(target != null)
         {
-            //GameObject orb = Instantiate(weapon, spawnPoint.transform.position, transform.rotation);
-            //orb.gameObject.transform.SetParent(spawnPoint.transform);
-            //orb.GetComponent<OrbBehaviour>().centerObject = spawnPoint.transform;
+            //To be added maybe
+        }
+        else
+        {
+            weapon[Random.Range(0, weapon.Count)].GetComponent<OrbBehaviour>().BulletMovement();
         }
     }
 }

@@ -87,7 +87,7 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 1
+  - m_ConditionMode: 2
     m_ConditionEvent: isGrounded
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
@@ -167,19 +167,19 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 2006307106196287340}
-    m_Position: {x: 290, y: -400, z: 0}
+    m_Position: {x: 360, y: -300, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8590205672197757829}
     m_Position: {x: 410, y: 110, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6145183870765052612}
-    m_Position: {x: 240, y: -110, z: 0}
+    m_Position: {x: 40, y: -240, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8298005019615697249}
-    m_Position: {x: 250, y: -10, z: 0}
+    m_Position: {x: 50, y: -140, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2910834422290726715}
-    m_Position: {x: 400, y: -290, z: 0}
+    m_Position: {x: 470, y: -190, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -280,6 +280,18 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
+--- !u!114 &1159180222657046844
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a5730cb7ca71b5429510b842ac225e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1102 &2006307106196287340
 AnimatorState:
   serializedVersion: 6
@@ -293,7 +305,8 @@ AnimatorState:
   m_Transitions:
   - {fileID: -2907883685829693452}
   - {fileID: -5928121167629407898}
-  m_StateMachineBehaviours: []
+  m_StateMachineBehaviours:
+  - {fileID: 1159180222657046844}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 1
   m_WriteDefaultValues: 1
@@ -413,7 +426,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.25
+  m_TransitionDuration: 0.1
   m_TransitionOffset: 0
   m_ExitTime: 0.53125
   m_HasExitTime: 1
