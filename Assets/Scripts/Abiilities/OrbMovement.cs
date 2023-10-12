@@ -9,9 +9,11 @@ public class OrbMovement : MonoBehaviour
     Transform centerTransform;
     bool hasCenterTransform;
 
+    [SerializeField] private GameObject explosionVFX;
+
     private void Awake()
     {
-        Destroy(gameObject, 5f);
+        StartCoroutine(DestroyBullet());
     }
     private void Update()
     {
@@ -48,6 +50,19 @@ public class OrbMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-       if (collision.gameObject.layer == 7 || collision.gameObject.tag.Equals("Enemy")) { Destroy(gameObject); }
+       if (collision.gameObject.layer == 7 || collision.gameObject.tag.Equals("Enemy")) { ExplosionVFX();  Destroy(gameObject); print("Collided"); }
+
+    }
+
+    private void ExplosionVFX()
+    {
+        Instantiate(explosionVFX, transform.position, Quaternion.identity);
+    }
+
+    IEnumerator DestroyBullet()
+    {
+        yield return new WaitForSeconds(5f);
+        ExplosionVFX();
+        Destroy(gameObject);
     }
 }

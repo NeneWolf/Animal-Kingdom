@@ -7,6 +7,7 @@ TagManager:
   - Animal
   - Enemy
   - PowerUp
+  - PlayerProjectile
   layers:
   - Default
   - TransparentFX
