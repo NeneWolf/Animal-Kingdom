@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 public class OrbBehaviour : MonoBehaviour
 {
     Rigidbody rigidbody;
+
     public Transform centerObject;  // The object to orbit around.
     public float orbitSpeed = 30f;  // The speed of the orbit in degrees per second.
     public Vector3 orbitAxis = Vector3.up;  // The axis around which the object orbits.
@@ -21,6 +22,10 @@ public class OrbBehaviour : MonoBehaviour
 
     public float fireSpeed = 10f;
 
+    private void Awake()
+    {
+        
+    }
     private void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
@@ -86,6 +91,11 @@ public class OrbBehaviour : MonoBehaviour
         isFired = true;
         transform.forward = centerObject.transform.forward;
         rigidbody.velocity = transform.forward * fireSpeed;
+    }
+
+    public void BulletMovementToTarget(Transform Target)
+    {
+
     }
 
 }

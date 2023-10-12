@@ -21,11 +21,20 @@ public class PlayerWeapon : MonoBehaviour
     {
         if(target != null)
         {
-            //To be added maybe
-        }
+            if (weapon.Count > 0)
+            {
+                int orbSelected = Random.Range(0, weapon.Count);
+                weapon[orbSelected].GetComponent<OrbBehaviour>().BulletMovementToTarget(target);
+                weapon.RemoveAt(orbSelected);
+            }
         else
         {
-            weapon[Random.Range(0, weapon.Count)].GetComponent<OrbBehaviour>().BulletMovement();
+            if (weapon.Count > 0) 
+            {
+                int orbSelected = Random.Range(0, weapon.Count);
+                weapon[orbSelected].GetComponent<OrbBehaviour>().BulletMovement();
+                weapon.RemoveAt(orbSelected);
+            }
         }
     }
 }

@@ -21,30 +21,16 @@ public class AnimatorManager : MonoBehaviour
         //#region Snapping Horizontal
 
         ////Animation Snapping
-        //float snappedHorizontal;
+        float snappedHorizontal;
 
-        //if (horizontalMovement > 0 && horizontalMovement < 0.55f) { snappedHorizontal = 0.5f; }
-        //else if (horizontalMovement > 0.55f) { snappedHorizontal = 1f; }
-        //else if (horizontalMovement < 0f && horizontalMovement > -0.55f) { snappedHorizontal = -0.5f; }
-        //else if (horizontalMovement < -0.55f) { snappedHorizontal = -1f; }
-        //else { snappedHorizontal = 0f; }
-
-        //#endregion
-        //#region Snapping Vertical
-
-        //float snappedVertical;
-
-        //if (verticalMovement > 0 && verticalMovement < 0.55f) { snappedVertical = 0.5f; }
-        //else if (verticalMovement > 0.55f) { snappedVertical = 1f; }
-        //else if (verticalMovement < 0f && verticalMovement > -0.55f) { snappedVertical = -0.5f; }
-        //else if (verticalMovement < -0.55f) { snappedVertical = -1f; }
-        //else { snappedVertical = 0f; }
-        //#endregion
-
-
+        if (horizontalMovement > 0 && horizontalMovement < 0.55f) { snappedHorizontal = 0.5f; }
+        else if (horizontalMovement > 0.55f) { snappedHorizontal = 1f; }
+        else if (horizontalMovement < 0f && horizontalMovement > -0.55f) { snappedHorizontal = -0.5f; }
+        else if (horizontalMovement < -0.55f) { snappedHorizontal = -1f; }
+        else { snappedHorizontal = 0f; }
         #endregion
 
-        animator.SetFloat(horizontal, horizontalMovement, 0.1f, Time.deltaTime);
+        animator.SetFloat(horizontal, snappedHorizontal, 0.1f, Time.deltaTime);
 
         if (isSprinting) { animator.SetFloat(vertical, 2, 0.1f, Time.deltaTime);}
         else { animator.SetFloat(vertical, verticalMovement, 0.1f, Time.deltaTime); }

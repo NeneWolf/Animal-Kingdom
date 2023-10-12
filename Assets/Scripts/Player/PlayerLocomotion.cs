@@ -33,6 +33,9 @@ public class PlayerLocomotion : MonoBehaviour
     public float sprintingSpeed = 7f;
     public float turnSpeed = 15f;
 
+    [Header("Projectiles")]
+
+
     private void Awake()
     {
         inputManager = GetComponent<InputManager>();
@@ -49,66 +52,66 @@ public class PlayerLocomotion : MonoBehaviour
         if (playerManager.isInteracting)
             return;
 
-        HandleMovement();
-        HandleRotation();
+        //HandleMovement();
+        //HandleRotation();
     }
 
-    private void HandleMovement()
-    {
-        if (isJumping) return;
+    //private void HandleMovement()
+    //{
+    //    if (isJumping) return;
 
-        moveDirection = transform.forward * inputManager.verticalInput;
-        moveDirection = moveDirection + transform.right * inputManager.horizontalInput;
-        moveDirection.Normalize();
-        moveDirection.y = 0;
+    //    moveDirection = transform.forward * inputManager.verticalInput;
+    //    moveDirection = moveDirection + transform.right * inputManager.horizontalInput;
+    //    moveDirection.Normalize();
+    //    moveDirection.y = 0;
 
-        if (isSprinting)
-        {
-            moveDirection *= sprintingSpeed;
-        }
-        else
-        {
-            //if we sprinting /running/walking (joinstick)
-            if (inputManager.moveAmount >= 0.5f) moveDirection *= runningSpeed;
-            else moveDirection *= walkingSpeed;
-        }
-        Vector3 movementVelocity = moveDirection;
-        playerRigidbody.velocity = movementVelocity;
-    }
+    //    if (isSprinting)
+    //    {
+    //        moveDirection *= sprintingSpeed;
+    //    }
+    //    else
+    //    {
+    //        //if we sprinting /running/walking (joinstick)
+    //        if (inputManager.moveAmount >= 0.5f) moveDirection *= runningSpeed;
+    //        else moveDirection *= walkingSpeed;
+    //    }
+    //    Vector3 movementVelocity = moveDirection;
+    //    playerRigidbody.velocity = movementVelocity;
+    //}
 
-    private void HandleRotation()
-    {
-        if (isJumping)
-            return;
+    //private void HandleRotation()
+    //{
+    //    if (isJumping)
+    //        return;
 
-        float horizontalInput = inputManager.horizontalInput;
+    //    float horizontalInput = inputManager.horizontalInput;
 
-        if (Mathf.Abs(horizontalInput) > 0.1f)
-        {
-            float verticalInput = inputManager.verticalInput;
+    //    if (Mathf.Abs(horizontalInput) > 0.1f)
+    //    {
+    //        float verticalInput = inputManager.verticalInput;
 
-            //Calculate the input direction relative to the camera
-            Vector3 cameraForward = cameraObject.forward;
-            Vector3 cameraRight = cameraObject.right;
-            cameraForward.y = 0;
-            cameraRight.y = 0;
-            cameraForward.Normalize();
-            cameraRight.Normalize();
+    //        //Calculate the input direction relative to the camera
+    //        Vector3 cameraForward = cameraObject.forward;
+    //        Vector3 cameraRight = cameraObject.right;
+    //        cameraForward.y = 0;
+    //        cameraRight.y = 0;
+    //        cameraForward.Normalize();
+    //        cameraRight.Normalize();
 
-            Vector3 targetDirection = cameraForward * verticalInput + cameraRight * horizontalInput;
-            if (targetDirection == Vector3.zero)
-            targetDirection = transform.forward;
+    //        Vector3 targetDirection = cameraForward * verticalInput + cameraRight * horizontalInput;
+    //        if (targetDirection == Vector3.zero)
+    //        targetDirection = transform.forward;
 
-            // Calculate the target rotation
-            Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+    //        // Calculate the target rotation
+    //        Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
 
-            //Smoothly interpolate between the current rotation and the target rotation
-            Quaternion playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+    //        //Smoothly interpolate between the current rotation and the target rotation
+    //        Quaternion playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
 
-            //Apply the new rotation
-            transform.rotation = playerRotation;
-        }
-    }
+    //        //Apply the new rotation
+    //        transform.rotation = playerRotation;
+    //    }
+    //}
 
     public void HandleFallingAndLanding()
     {
