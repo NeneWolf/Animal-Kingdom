@@ -38,9 +38,9 @@ public class PlayerLocomotion : MonoBehaviour
     float nextFire;
 
     [Header("PowerUps")]
-    [SerializeField]GameObject manaFullCharge;
-    public int mana = 100;
+    [SerializeField] private GameObject powerUpEffect;
     public bool autoTarget;
+    public float timer;
 
     private void Awake()
     {
@@ -51,6 +51,7 @@ public class PlayerLocomotion : MonoBehaviour
         animatorManager = GetComponent<AnimatorManager>();
         playerWeapon = GetComponent<PlayerWeapon>();
     }
+
     public void HandleAllMovement()
     {
         HandleFallingAndLanding();
@@ -166,6 +167,28 @@ public class PlayerLocomotion : MonoBehaviour
         {
             playerWeapon.Shoot(autoTarget);
         }
+    }
+
+    public void HandleAutoTarget(float timer)
+    {
+        autoTarget = true;
+        this.timer = timer;
+        StartCoroutine(PlayEffect());
+        StartCoroutine(AutoTargetTimer());
+    }
+
+    IEnumerator AutoTargetTimer()
+    {
+
+        yield return new WaitForSeconds(timer);
+        autoTarget = false;
+    }
+
+    IEnumerator PlayEffect()
+    {
+        powerUpEffect.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        powerUpEffect.SetActive(false);
     }
 
 }
