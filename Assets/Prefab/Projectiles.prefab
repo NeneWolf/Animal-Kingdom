@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 1563507911033073150}
   - component: {fileID: 5894462451574388322}
   - component: {fileID: 1683217398322327046}
-  - component: {fileID: 8756897245952728530}
+  - component: {fileID: -6936575805712053775}
   m_Layer: 6
-  m_Name: Sphere
+  m_Name: Projectiles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -98,7 +98,7 @@ SphereCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
@@ -106,7 +106,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8756897245952728530
+--- !u!114 &-6936575805712053775
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -115,13 +115,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6714499238237425968}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e161d7948259e3c4f923103850accbd4, type: 3}
+  m_Script: {fileID: 11500000, guid: 784f1b6f100be2b4098edb3eff1e2887, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  centerTransform: {fileID: 0}
-  projectile: {fileID: 6714499238237425968, guid: 56434182a60c3634c83f9295fe2b48b1, type: 3}
-  orbitSpeed: 30
-  orbitAxis: {x: 3, y: 2, z: 0}
-  radius: 0.2
-  speed: 50
-  initialAngle: 90
+  fireSpeed: 10

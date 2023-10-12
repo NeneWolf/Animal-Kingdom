@@ -34,7 +34,13 @@ public class PlayerLocomotion : MonoBehaviour
     public float turnSpeed = 15f;
 
     [Header("Projectiles")]
+    public float fireRate = 0.75f;
+    float nextFire;
 
+    [Header("PowerUps")]
+    [SerializeField]GameObject manaFullCharge;
+    public int mana = 100;
+    public bool autoTarget;
 
     private void Awake()
     {
@@ -156,9 +162,9 @@ public class PlayerLocomotion : MonoBehaviour
 
     public void HandleFire()
     {
-        if (isGrounded)
+        if (isGrounded && Time.time > nextFire)
         {
-            playerWeapon.Shoot(null);
+            playerWeapon.Shoot(autoTarget);
         }
     }
 

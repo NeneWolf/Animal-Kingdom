@@ -1,12 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerWeapon : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> weapon;
+    [Header("Projectile information")]
     [SerializeField] private GameObject WeaponOrbStorage;
 
+
+    [Header("Info")]
+    [SerializeField] private List<GameObject> weapon;
+    public int currentWeapons;
+
+
+    public float projectileAttackRange;
+
+    [Header("Target Check")]
+    [SerializeField] private Transform TargetCheck;
+    GameObject target;
+    GameObject currentTarget;
+    bool findTarget;
+
+
+    public bool isReloading;
+    bool canReload;
+    [SerializeField] private int reloadTime;
 
     // Start is called before the first frame update
     void Start()
@@ -15,26 +34,96 @@ public class PlayerWeapon : MonoBehaviour
         {
             weapon.Add(child.gameObject);
         }
+
+        currentWeapons = weapon.Count;
     }
 
-    public void Shoot(GameObject target)
+    private void Update()
     {
-        if(target != null)
+        if(currentWeapons == 0 && !isReloading)
         {
-            if (weapon.Count > 0)
+            StartCoroutine(WeaponReload());
+        }
+    }
+
+    public void Shoot(bool autoTarget)
+    {
+        if (isReloading == false && currentWeapons > 0)
+        {
+            findTarget = autoTarget;
+
+            if (autoTarget)
             {
-                int orbSelected = Random.Range(0, weapon.Count);
-                weapon[orbSelected].GetComponent<OrbBehaviour>().BulletMovementToTarget(target);
-                weapon.RemoveAt(orbSelected);
+                FindAutoTarget();
             }
-        else
+            else
+                currentTarget = null;
+
+            weapon[currentWeapons-1].GetComponent<MeshRenderer>().enabled = false;
+            weapon[currentWeapons-1].GetComponent<SphereCollider>().enabled = false;
+
+            weapon[currentWeapons-1].GetComponent<OrbBehaviour>().FireBullet(currentTarget);
+            currentWeapons--;
+        }
+
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(TargetCheck.position, projectileAttackRange);
+    }
+
+    void FindAutoTarget()
+    {
+        RaycastHit[] hits;
+        hits = Physics.SphereCastAll(TargetCheck.position, projectileAttackRange, transform.forward,0.5f);
+
+        foreach (RaycastHit hit in hits)
         {
-            if (weapon.Count > 0) 
+            if (hit.transform.gameObject.tag == "Enemy")
             {
-                int orbSelected = Random.Range(0, weapon.Count);
-                weapon[orbSelected].GetComponent<OrbBehaviour>().BulletMovement();
-                weapon.RemoveAt(orbSelected);
+                target = hit.transform.gameObject;
+
+                //Compare it with the previous distance
+                if (currentTarget == null)
+                {
+                    currentTarget = target;
+                }
+                else
+                {
+                    float distanceToNewTarget = Vector3.Distance(transform.position, target.transform.position);
+                    float distanceToCurrentTarget = Vector3.Distance(transform.position, currentTarget.transform.position);
+
+                    if (distanceToNewTarget < distanceToCurrentTarget)
+                    {
+                        currentTarget = target;
+                    }
+                }
+                break;
+            }
+            else
+            {
+                target = null;
             }
         }
     }
+
+    IEnumerator WeaponReload()
+    {
+        isReloading = true;
+
+        yield return new WaitForSeconds(reloadTime);
+        foreach (GameObject orb in weapon)
+        {
+            orb.GetComponent<MeshRenderer>().enabled = true;
+            orb.GetComponent<SphereCollider>().enabled = true;
+            yield return new WaitForSeconds(reloadTime/weapon.Count);
+        }
+
+        currentWeapons = weapon.Count;
+        isReloading = false;
+        canReload = false;
+    }
+
 }
