@@ -6,6 +6,7 @@ public class InputManager : MonoBehaviour
 {
     PlayerInputAction playerControls;
     PlayerLocomotion playerLocomotion;
+    PlayerManager playerManager;
     AnimatorManager animatorManager;
     public Vector2 moveInput;
     public float moveAmount;
@@ -28,6 +29,7 @@ public class InputManager : MonoBehaviour
     {
         animatorManager = GetComponent<AnimatorManager>();
         playerLocomotion = GetComponent<PlayerLocomotion>();
+        playerManager = GetComponent<PlayerManager>();
     }
 
     private void OnEnable()
@@ -58,11 +60,14 @@ public class InputManager : MonoBehaviour
     //Handle All the inputs and calls the functions
     public void HandleAllInputs()
     {
-        HandleMovementInput();
-        HandleCameraInput();
-        HandleSprintingInput();
-        HandleJumpInput();
-        HandleFire();
+        if (!playerManager.ReportDead())
+        {
+            HandleMovementInput();
+            HandleCameraInput();
+            HandleSprintingInput();
+            HandleJumpInput();
+            HandleFire();
+        }
     }
 
     private void HandleMovementInput()

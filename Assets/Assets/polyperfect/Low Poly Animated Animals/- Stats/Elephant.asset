@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38025e9300822a146ac1328021446430, type: 3}
   m_Name: Elephant
   m_EditorClassIdentifier: 
-  dominance: 10
+  dominance: 90
   stamina: 20
   power: 45
   toughness: 80
-  agression: 4
+  agression: 81
   attackSpeed: 2
-  territorial: 0
+  territorial: 1
   stealthy: 0

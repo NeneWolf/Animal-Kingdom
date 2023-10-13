@@ -154,10 +154,15 @@ public class PlayerLocomotion : MonoBehaviour
 
     public void HandleJump()
     {
-        if (isGrounded)
+        if (isGrounded && !isSprinting)
         {
             animatorManager.animator.SetBool("isJumping", true);
-            animatorManager.PlayTargetAnimation("Wolf_Jump", false);
+            animatorManager.PlayTargetAnimation("Wolf_Walk_Jump", false);
+        }
+        else if (isGrounded && isSprinting)
+        {
+            animatorManager.animator.SetBool("isJumping", true);
+            animatorManager.PlayTargetAnimation("Wolf_Sprint_Jump", false);
         }
     }
 

@@ -9,7 +9,13 @@ public class PlayerManager : MonoBehaviour
     PlayerLocomotion playerLocomotion;
     CameraManager cameraManager;
 
-    public bool isInteracting;
+    [HideInInspector]
+    public bool isInteracting; // Maybe to fix this later not to be public
+
+    [Header("Player Information")]
+    bool isDead;
+    float health = 100f;
+    public float currentHealth;
 
     private void Awake()
     {
@@ -17,11 +23,18 @@ public class PlayerManager : MonoBehaviour
         playerLocomotion = GetComponent<PlayerLocomotion>();
         cameraManager = FindAnyObjectByType<CameraManager>();
         animator = GetComponent<Animator>();
+
+        currentHealth = health;
     }
 
     private void Update()
     {
         inputManager.HandleAllInputs();
+
+        if(currentHealth <= 0)
+        {
+            isDead = true;
+        }
     }
 
     private void FixedUpdate()
@@ -35,5 +48,21 @@ public class PlayerManager : MonoBehaviour
         isInteracting = animator.GetBool("isInteracting");
         playerLocomotion.isJumping = animator.GetBool("isJumping");
         animator.SetBool("isGrounded",playerLocomotion.isGrounded);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        currentHealth -= damage;
+        if(currentHealth <= 0)
+        {
+            currentHealth = 0;
+            isDead = true;
+            animator.SetBool("isDead", true);
+        }
+    }
+
+    public bool ReportDead()
+    {
+        return isDead;
     }
 }

@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - PowerUp
   - PlayerProjectile
+  - VFX
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - UI
   - Player
   - Environment
-  - 
+  - EnemyMagAbility
   - 
   - 
   - 
