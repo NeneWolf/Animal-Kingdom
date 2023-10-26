@@ -63,6 +63,7 @@ public class PlayerLocomotion : MonoBehaviour
         //HandleRotation();
     }
 
+    #region OldMovement
     //private void HandleMovement()
     //{
     //    if (isJumping) return;
@@ -119,6 +120,7 @@ public class PlayerLocomotion : MonoBehaviour
     //        transform.rotation = playerRotation;
     //    }
     //}
+    #endregion
 
     public void HandleFallingAndLanding()
     {
@@ -157,7 +159,7 @@ public class PlayerLocomotion : MonoBehaviour
         if (isGrounded && !isSprinting)
         {
             animatorManager.animator.SetBool("isJumping", true);
-            animatorManager.PlayTargetAnimation("Wolf_Walk_Jump", false);
+            animatorManager.PlayTargetAnimation("Wolf_Jump_Forward", false);
         }
         else if (isGrounded && isSprinting)
         {

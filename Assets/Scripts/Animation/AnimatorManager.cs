@@ -30,6 +30,7 @@ public class AnimatorManager : MonoBehaviour
         else { snappedHorizontal = 0f; }
         #endregion
 
+
         animator.SetFloat(horizontal, snappedHorizontal, 0.1f, Time.deltaTime);
 
         if (isSprinting) { animator.SetFloat(vertical, 2, 0.1f, Time.deltaTime);}

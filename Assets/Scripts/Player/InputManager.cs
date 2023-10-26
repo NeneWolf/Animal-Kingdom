@@ -23,6 +23,8 @@ public class InputManager : MonoBehaviour
     public bool bInput;
     public bool jumpInput;
 
+    public bool isMoving;
+
     public bool isFiring;
 
     private void Awake()
@@ -51,6 +53,7 @@ public class InputManager : MonoBehaviour
         playerControls.Enable();
 
     }
+
     //
     private void OnDisable()
     {

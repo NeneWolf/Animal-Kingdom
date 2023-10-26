@@ -1,19 +1,17 @@
 fileFormatVersion: 2
-guid: 1d3f8f9aeb837534ebe0ed29b63e69f4
-AssetOrigin:
-  serializedVersion: 1
-  productId: 78795
-  packageName: 'Poly Art: Wolf'
-  packageVersion: 3.8
-  assetPath: Assets/Malbers Animations/Animals Packs/01 Forest Pack/Wolf/Animations
-    v2/Fall/Wolfr_Fall_Edge_Forward.fbx
-  uploadId: 584861
+guid: 88b5ac8b8779a7a4298e3d9f5ef4accb
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable:
   - first:
       74: 1827226128182048838
-    second: Wolfr_Fall_Edge_Forward
+    second: Wolfr_Jump_Forward (Baked)
+  - first:
+      74: -998496362607748373
+    second: Wolfr_Jump_Forward
+  - first:
+      74: -8341853250817537493
+    second: Wolfr_Land_Forward
   externalObjects: {}
   materials:
     materialImportMode: 1
@@ -42,11 +40,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Wolfr_Fall_Edge_Forward
+      name: Wolfr_Jump_Forward (Baked)
       takeName: Take 001
       internalID: 0
       firstFrame: 0
-      lastFrame: 16
+      lastFrame: 52
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -56,7 +54,65 @@ ModelImporter:
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 1
-      loopBlendPositionY: 0
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Wolfr_Jump_Forward
+      takeName: Take 001
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 52
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 1
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Wolfr_Land_Forward
+      takeName: Take 001
+      internalID: 0
+      firstFrame: 42
+      lastFrame: 52
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 1
       keepOriginalPositionY: 1
@@ -133,7 +189,8 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 25be4f04cada3554ea839c4ad099f89c, type: 3}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 25be4f04cada3554ea839c4ad099f89c,
+    type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
