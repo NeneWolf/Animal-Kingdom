@@ -52,6 +52,9 @@ public class PlayerManager : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        if(playerLocomotion.isInvisible)
+            playerLocomotion.isGoingVisible = true;
+
         currentHealth -= damage;
         if(currentHealth <= 0)
         {
