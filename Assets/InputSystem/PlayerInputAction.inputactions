@@ -208,7 +208,7 @@
             "id": "45b24d12-5bf3-4532-aefc-c9c2db64078c",
             "actions": [
                 {
-                    "name": "B",
+                    "name": "Sprint",
                     "type": "Button",
                     "id": "77e2d8fb-c8a5-4344-b287-cedeca620bf7",
                     "expectedControlType": "Button",
@@ -226,9 +226,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Fire",
+                    "name": "PrimarySkill",
                     "type": "Button",
                     "id": "8e956b17-ab43-456e-9c60-f712878cfcde",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SecondSkill",
+                    "type": "Button",
+                    "id": "584b87e9-5d9e-4c78-a118-0c3635ae3a71",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -243,7 +252,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "B",
+                    "action": "Sprint",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -254,7 +263,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "B",
+                    "action": "Sprint",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -283,11 +292,22 @@
                 {
                     "name": "",
                     "id": "5325d5c3-d246-4970-a17d-4762c7aaefaa",
-                    "path": "<Keyboard>/e",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Fire",
+                    "action": "PrimarySkill",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "19e2a638-8605-4605-9738-224eeeab7090",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SecondSkill",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

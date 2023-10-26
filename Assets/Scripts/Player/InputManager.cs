@@ -20,12 +20,13 @@ public class InputManager : MonoBehaviour
     public float cameraInputX;
     public float cameraInputY;
 
-    public bool bInput;
+    public bool sprintInput;
     public bool jumpInput;
 
     public bool isMoving;
 
-    public bool isFiring;
+    public bool isPrimaryAttack;
+    public bool isSecondaryAttack;  
 
     private void Awake()
     {
@@ -42,12 +43,13 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerMovement.Movement.performed += i => moveInput = i.ReadValue<Vector2>();
             playerControls.PlayerMovement.Camera.performed += i => cameraInput = i.ReadValue<Vector2>();
 
-            playerControls.PlayerActions.B.performed += i => bInput = true;
-            playerControls.PlayerActions.B.canceled += i => bInput = false;
+            playerControls.PlayerActions.Sprint.performed += i => sprintInput = true;
+            playerControls.PlayerActions.Sprint.canceled += i => sprintInput = false;
 
             playerControls.PlayerActions.Jump.performed += i => jumpInput = true;
 
-            playerControls.PlayerActions.Fire.performed += i => isFiring = true;
+            playerControls.PlayerActions.PrimarySkill.performed += i => isPrimaryAttack = true;
+            playerControls.PlayerActions.SecondSkill.performed += i => isSecondaryAttack = true;
         }
 
         playerControls.Enable();
@@ -69,7 +71,8 @@ public class InputManager : MonoBehaviour
             HandleCameraInput();
             HandleSprintingInput();
             HandleJumpInput();
-            HandleFire();
+            PrimaryAttack();
+            SecondaryAttack();
         }
     }
 
@@ -91,7 +94,7 @@ public class InputManager : MonoBehaviour
 
     private void HandleSprintingInput()
     {
-        if(bInput && verticalInput > 0.5f) playerLocomotion.isSprinting = true;
+        if(sprintInput && verticalInput > 0.5f) playerLocomotion.isSprinting = true;
         else playerLocomotion.isSprinting = false;
     }
 
@@ -104,12 +107,21 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    private void HandleFire()
+    private void PrimaryAttack()
     {
-        if(isFiring)
+        if(isPrimaryAttack && !isSecondaryAttack)
         {
-            isFiring = false;
-            playerLocomotion.HandleFire();
+            isPrimaryAttack = false;
+            playerLocomotion.PrimaryAttack();
+        }
+    }
+
+    private void SecondaryAttack()
+    {
+        if (isSecondaryAttack && !isPrimaryAttack)
+        {
+            isSecondaryAttack = false;
+            playerLocomotion.SecondaryAttack();
         }
     }
 }

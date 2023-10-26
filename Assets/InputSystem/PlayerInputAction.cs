@@ -230,7 +230,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             ""id"": ""45b24d12-5bf3-4532-aefc-c9c2db64078c"",
             ""actions"": [
                 {
-                    ""name"": ""B"",
+                    ""name"": ""Sprint"",
                     ""type"": ""Button"",
                     ""id"": ""77e2d8fb-c8a5-4344-b287-cedeca620bf7"",
                     ""expectedControlType"": ""Button"",
@@ -248,9 +248,18 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Fire"",
+                    ""name"": ""PrimarySkill"",
                     ""type"": ""Button"",
                     ""id"": ""8e956b17-ab43-456e-9c60-f712878cfcde"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SecondSkill"",
+                    ""type"": ""Button"",
+                    ""id"": ""584b87e9-5d9e-4c78-a118-0c3635ae3a71"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -265,7 +274,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""B"",
+                    ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -276,7 +285,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""B"",
+                    ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -305,11 +314,22 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""5325d5c3-d246-4970-a17d-4762c7aaefaa"",
-                    ""path"": ""<Keyboard>/e"",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Fire"",
+                    ""action"": ""PrimarySkill"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""19e2a638-8605-4605-9738-224eeeab7090"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SecondSkill"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -324,9 +344,10 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_PlayerMovement_Camera = m_PlayerMovement.FindAction("Camera", throwIfNotFound: true);
         // PlayerActions
         m_PlayerActions = asset.FindActionMap("PlayerActions", throwIfNotFound: true);
-        m_PlayerActions_B = m_PlayerActions.FindAction("B", throwIfNotFound: true);
+        m_PlayerActions_Sprint = m_PlayerActions.FindAction("Sprint", throwIfNotFound: true);
         m_PlayerActions_Jump = m_PlayerActions.FindAction("Jump", throwIfNotFound: true);
-        m_PlayerActions_Fire = m_PlayerActions.FindAction("Fire", throwIfNotFound: true);
+        m_PlayerActions_PrimarySkill = m_PlayerActions.FindAction("PrimarySkill", throwIfNotFound: true);
+        m_PlayerActions_SecondSkill = m_PlayerActions.FindAction("SecondSkill", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -442,16 +463,18 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     // PlayerActions
     private readonly InputActionMap m_PlayerActions;
     private List<IPlayerActionsActions> m_PlayerActionsActionsCallbackInterfaces = new List<IPlayerActionsActions>();
-    private readonly InputAction m_PlayerActions_B;
+    private readonly InputAction m_PlayerActions_Sprint;
     private readonly InputAction m_PlayerActions_Jump;
-    private readonly InputAction m_PlayerActions_Fire;
+    private readonly InputAction m_PlayerActions_PrimarySkill;
+    private readonly InputAction m_PlayerActions_SecondSkill;
     public struct PlayerActionsActions
     {
         private @PlayerInputAction m_Wrapper;
         public PlayerActionsActions(@PlayerInputAction wrapper) { m_Wrapper = wrapper; }
-        public InputAction @B => m_Wrapper.m_PlayerActions_B;
+        public InputAction @Sprint => m_Wrapper.m_PlayerActions_Sprint;
         public InputAction @Jump => m_Wrapper.m_PlayerActions_Jump;
-        public InputAction @Fire => m_Wrapper.m_PlayerActions_Fire;
+        public InputAction @PrimarySkill => m_Wrapper.m_PlayerActions_PrimarySkill;
+        public InputAction @SecondSkill => m_Wrapper.m_PlayerActions_SecondSkill;
         public InputActionMap Get() { return m_Wrapper.m_PlayerActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -461,28 +484,34 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_PlayerActionsActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_PlayerActionsActionsCallbackInterfaces.Add(instance);
-            @B.started += instance.OnB;
-            @B.performed += instance.OnB;
-            @B.canceled += instance.OnB;
+            @Sprint.started += instance.OnSprint;
+            @Sprint.performed += instance.OnSprint;
+            @Sprint.canceled += instance.OnSprint;
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
-            @Fire.started += instance.OnFire;
-            @Fire.performed += instance.OnFire;
-            @Fire.canceled += instance.OnFire;
+            @PrimarySkill.started += instance.OnPrimarySkill;
+            @PrimarySkill.performed += instance.OnPrimarySkill;
+            @PrimarySkill.canceled += instance.OnPrimarySkill;
+            @SecondSkill.started += instance.OnSecondSkill;
+            @SecondSkill.performed += instance.OnSecondSkill;
+            @SecondSkill.canceled += instance.OnSecondSkill;
         }
 
         private void UnregisterCallbacks(IPlayerActionsActions instance)
         {
-            @B.started -= instance.OnB;
-            @B.performed -= instance.OnB;
-            @B.canceled -= instance.OnB;
+            @Sprint.started -= instance.OnSprint;
+            @Sprint.performed -= instance.OnSprint;
+            @Sprint.canceled -= instance.OnSprint;
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
-            @Fire.started -= instance.OnFire;
-            @Fire.performed -= instance.OnFire;
-            @Fire.canceled -= instance.OnFire;
+            @PrimarySkill.started -= instance.OnPrimarySkill;
+            @PrimarySkill.performed -= instance.OnPrimarySkill;
+            @PrimarySkill.canceled -= instance.OnPrimarySkill;
+            @SecondSkill.started -= instance.OnSecondSkill;
+            @SecondSkill.performed -= instance.OnSecondSkill;
+            @SecondSkill.canceled -= instance.OnSecondSkill;
         }
 
         public void RemoveCallbacks(IPlayerActionsActions instance)
@@ -507,8 +536,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     }
     public interface IPlayerActionsActions
     {
-        void OnB(InputAction.CallbackContext context);
+        void OnSprint(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
-        void OnFire(InputAction.CallbackContext context);
+        void OnPrimarySkill(InputAction.CallbackContext context);
+        void OnSecondSkill(InputAction.CallbackContext context);
     }
 }

@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class PlayerWeapon : MonoBehaviour
 {
+    AnimatorManager animatorManager;
+
     [Header("Projectile information")]
     [SerializeField] private GameObject WeaponOrbStorage;
 
@@ -27,7 +29,11 @@ public class PlayerWeapon : MonoBehaviour
     bool isReloading;
     [SerializeField] private int reloadTime;
 
-    // Start is called before the first frame update
+    private void Awake()
+    {
+        animatorManager = GetComponent<AnimatorManager>();
+    }
+
     void Start()
     {
         foreach(Transform child in WeaponOrbStorage.transform)
@@ -60,10 +66,15 @@ public class PlayerWeapon : MonoBehaviour
             else
                 currentTarget = null;
 
+
+            animatorManager.PlayTargetAnimation("PrimaryAttack", false);
+
+            
             weapon[currentWeapons-1].GetComponent<MeshRenderer>().enabled = false;
             weapon[currentWeapons-1].GetComponent<SphereCollider>().enabled = false;
 
             weapon[currentWeapons-1].GetComponent<OrbBehaviour>().FireBullet(currentTarget);
+
             currentWeapons--;
         }
 

@@ -8,6 +8,8 @@ public class AnimatorManager : MonoBehaviour
     int horizontal;
     int vertical;
 
+    public float speed;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -17,9 +19,7 @@ public class AnimatorManager : MonoBehaviour
 
     public void UpdateAnimatorValues(float horizontalMovement, float verticalMovement, bool isSprinting)
     {
-        #region If I want to waste more time
-        //#region Snapping Horizontal
-
+        #region 
         ////Animation Snapping
         float snappedHorizontal;
 
@@ -33,8 +33,8 @@ public class AnimatorManager : MonoBehaviour
 
         animator.SetFloat(horizontal, snappedHorizontal, 0.1f, Time.deltaTime);
 
-        if (isSprinting) { animator.SetFloat(vertical, 2, 0.1f, Time.deltaTime);}
-        else { animator.SetFloat(vertical, verticalMovement, 0.1f, Time.deltaTime); }
+        if (isSprinting) { animator.SetFloat(vertical, 2, 0.1f, Time.deltaTime); animator.speed = speed; }
+        else { animator.SetFloat(vertical, verticalMovement, 0.1f, Time.deltaTime); animator.speed = 1f; }
     }
 
     public void PlayTargetAnimation(string targetAnimation, bool isInteracting)
