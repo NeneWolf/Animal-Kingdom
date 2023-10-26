@@ -24,6 +24,7 @@ public class PlayerLocomotion : MonoBehaviour
     public bool isJumping;
     public bool isGoingInvisible;
     public bool isInvisible;
+    public bool isGoingVisible;
 
     [Header("Falling")]
     [SerializeField]Transform groundChecker;
@@ -39,15 +40,20 @@ public class PlayerLocomotion : MonoBehaviour
     float nextFire;
 
     [Header("Secondary Skill - Invisble")]
-
-    [SerializeField] GameObject[] playerMaterials;
+    [SerializeField] GameObject playerBody;
+    [SerializeField] Material[] playerMaterials;
     [SerializeField] GameObject[] playerDisableElements;
 
     public float fadeInTime;
     public float invisibleTimer;
-    float timerInvisbleFadeIn;
-    public float timerInvisbleFadeOut;
+    float timerInvisibleFadeIn;
     public AnimationCurve fadeIn;
+
+    //
+    public float fadeOutTime;
+    public float visibleTimer;
+    float timerVisibleFadeOut;
+    public AnimationCurve fadeOut;
 
     [Header("PowerUps")]
     [SerializeField] private GameObject powerUpEffect;
@@ -73,7 +79,7 @@ public class PlayerLocomotion : MonoBehaviour
     void Update()
     {
         FadeInInvisible();
-
+        FadeOutInvisible();
     }
 
     public void HandleAllMovement()
@@ -191,6 +197,12 @@ public class PlayerLocomotion : MonoBehaviour
 
     public void PrimaryAttack()
     {
+        if(isInvisible == true)
+        {
+            isGoingVisible = true;
+            isInvisible = false;
+        }
+
         if ((isGrounded && Time.time > nextFire) && !isInvisible)
         {
             playerWeapon.Shoot(autoTarget);
@@ -200,7 +212,8 @@ public class PlayerLocomotion : MonoBehaviour
     //Go Invisible
     public void SecondaryAttack()
     {
-        isGoingInvisible = true;
+        if (isInvisible == false)
+            isGoingInvisible = true;
     }
 
     void FadeInInvisible()
@@ -208,29 +221,57 @@ public class PlayerLocomotion : MonoBehaviour
         // Add Timer to go invisible
 
         //
-        if (isGoingInvisible)
+        if (isGoingInvisible == true)
         {
-            playerMaterials[0].SetActive(false);
-            playerMaterials[1].SetActive(true);
+            //Disable weapons & Magic mask
+            foreach (GameObject element in playerDisableElements)
+            {
+                element.SetActive(false);
+            }
 
+            //Grab the new material
+            playerBody.GetComponent<Renderer>().material = playerMaterials[1];
 
+            //Start Timer
+            timerInvisibleFadeIn += Time.deltaTime * invisibleTimer;
 
-            timerInvisbleFadeIn += Time.deltaTime * invisibleTimer;
-
+            //Set the shader property
             shaderProperty = Shader.PropertyToID("_cutoff");
-            playerMaterials[1].GetComponent<Renderer>().material.SetFloat(shaderProperty, fadeIn.Evaluate(Mathf.InverseLerp(0, fadeInTime, timerInvisbleFadeIn)));
+            playerBody.GetComponent<Renderer>().material.SetFloat(shaderProperty, fadeIn.Evaluate(Mathf.InverseLerp(0, fadeInTime, timerInvisibleFadeIn)));
 
-            if (timerInvisbleFadeIn > fadeInTime)
+            //Timer and actions when timer is done
+            if (timerInvisibleFadeIn >= fadeInTime)
             {
                 isGoingInvisible = false;
-                isInvisible= true;
-                foreach (GameObject element in playerDisableElements)
-                {
-                    element.SetActive(false);
-                }
+                isInvisible = true;
+                playerBody.GetComponent<Renderer>().material = playerMaterials[2];
+                timerInvisibleFadeIn = 0;
+            }
+        }
+    }
 
-                playerMaterials[1].SetActive(false);
-                playerMaterials[2].SetActive(true);
+    void FadeOutInvisible()
+    {
+        if (isGoingVisible)
+        {
+            foreach (GameObject element in playerDisableElements)
+            {
+                element.SetActive(true);
+            }
+
+            playerBody.GetComponent<Renderer>().material = playerMaterials[1];
+
+            timerVisibleFadeOut += Time.deltaTime * visibleTimer;
+
+            shaderProperty = Shader.PropertyToID("_cutoff");
+            playerBody.GetComponent<Renderer>().material.SetFloat(shaderProperty, fadeOut.Evaluate(Mathf.InverseLerp(0, fadeOutTime, timerVisibleFadeOut)));
+
+            if (timerVisibleFadeOut >= fadeOutTime)
+            {
+                isGoingVisible = false;
+                isInvisible = false;
+                playerBody.GetComponent<Renderer>().material = playerMaterials[0];
+                timerVisibleFadeOut = 0;
             }
         }
     }
