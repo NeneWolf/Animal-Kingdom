@@ -99,7 +99,7 @@ public class InputManager : MonoBehaviour
             if (sprintInput && verticalInput > 0.5f)
             {
                 playerLocomotion.isSprinting = true; 
-                playerManager.TakeStamina(0.1f);
+                playerManager.TakeStamina(0.05f);
             }
             else playerLocomotion.isSprinting = false;
         }
