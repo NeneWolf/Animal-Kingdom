@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerWeapon : MonoBehaviour
 {
+    PlayerLocomotion playerLocomotion;
     AnimatorManager animatorManager;
 
     [Header("Projectile information")]
@@ -25,13 +26,14 @@ public class PlayerWeapon : MonoBehaviour
     bool findTarget;
 
     [Header("Reloading")]
-    [SerializeField] GameObject manaFullCharge;
+    [SerializeField] GameObject reloadFullChargeSkin;
     bool isReloading;
     [SerializeField] private int reloadTime;
 
     private void Awake()
     {
         animatorManager = GetComponent<AnimatorManager>();
+        playerLocomotion = GetComponent<PlayerLocomotion>();
     }
 
     void Start()
@@ -48,9 +50,18 @@ public class PlayerWeapon : MonoBehaviour
     {
         if(currentWeapons == 0 && !isReloading)
         {
-            manaFullCharge.gameObject.SetActive(false);
+            reloadFullChargeSkin.gameObject.SetActive(false);
             StartCoroutine(WeaponReload());
         }
+
+        // Deals with turning off or on the "full reloaded skin"
+        if (!playerLocomotion.isInvisible && !isReloading)
+        {
+            reloadFullChargeSkin.gameObject.SetActive(true);
+        }
+        
+        if(playerLocomotion.isInvisible)
+            reloadFullChargeSkin.gameObject.SetActive(false);
     }
 
     public void Shoot(bool autoTarget)
@@ -132,7 +143,9 @@ public class PlayerWeapon : MonoBehaviour
             orb.GetComponent<SphereCollider>().enabled = true;
             yield return new WaitForSeconds(reloadTime/weapon.Count);
         }
-        manaFullCharge.gameObject.SetActive(true);
+        if(!playerLocomotion.isInvisible)
+            reloadFullChargeSkin.gameObject.SetActive(true);
+
         currentWeapons = weapon.Count;
         isReloading = false;
     }

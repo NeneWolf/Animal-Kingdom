@@ -50,7 +50,12 @@ public class OrbMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-       if (collision.gameObject.layer == 7 || collision.gameObject.tag.Equals("Enemy")) { ExplosionVFX();  Destroy(gameObject); print("Collided"); }
+       if (collision.gameObject.layer == 7 || collision.gameObject.tag.Equals("Enemy")) { 
+            ExplosionVFX();  
+            Destroy(gameObject); 
+            
+            // To add - take enemy Health
+        }
 
     }
 

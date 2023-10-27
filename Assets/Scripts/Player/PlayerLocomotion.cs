@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Android.Gradle;
 using UnityEngine;
 using UnityEngine.InputSystem.HID;
 
@@ -254,11 +255,11 @@ public class PlayerLocomotion : MonoBehaviour
     {
         if (isGoingVisible)
         {
-            foreach (GameObject element in playerDisableElements)
-            {
-                element.SetActive(true);
-            }
+            //foreach (GameObject element in playerDisableElements)
+            //{
 
+            //}
+            playerDisableElements[0].SetActive(true);
             playerBody.GetComponent<Renderer>().material = playerMaterials[1];
 
             timerVisibleFadeOut += Time.deltaTime * visibleTimer;

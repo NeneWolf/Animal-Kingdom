@@ -1159,6 +1159,26 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: GameScene_Offline
       objectReference: {fileID: 0}
+    - target: {fileID: 932300688401357469, guid: ed73b71995a9581448cf6c8f2119fd2f, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300006, guid: 7188e9d0ec465034995ea794e337b4bd, type: 3}
+    - target: {fileID: 932300688401357469, guid: ed73b71995a9581448cf6c8f2119fd2f, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 932300688401357469, guid: ed73b71995a9581448cf6c8f2119fd2f, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 932300688401357469, guid: ed73b71995a9581448cf6c8f2119fd2f, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 932300688401357469, guid: ed73b71995a9581448cf6c8f2119fd2f, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 932300688880132227, guid: ed73b71995a9581448cf6c8f2119fd2f, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 2
