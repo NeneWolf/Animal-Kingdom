@@ -38,6 +38,9 @@ public class CameraManager : MonoBehaviour
         inputManager = FindAnyObjectByType<InputManager>();
         cameraTransform = Camera.main.transform;
         defaultPosition = cameraTransform.localPosition.z;
+
+        // Lock mouse cursor to the center of the screen
+        Cursor.lockState = CursorLockMode.Locked;
     }
     public void HandleAllCameraMovement()
     {

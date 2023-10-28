@@ -18,6 +18,10 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     public GameObject textPrefab;
     public Transform insideRoomPlayerList;
 
+    //
+    public Transform listRoomPanel;
+    public GameObject roomEntryPrefab;
+    public Transform listRoomPanelContent;
 
     //Random Name
     private void Start()
@@ -107,12 +111,67 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom();
     }
 
-    public override void OnLeftLobby()
+    //public override void OnLeftRoom()
+    //{
+    //    Debug.Log("Room has been joined!");
+    //    ActivatePanel("CreateRoom");
+    //}
+
+    public void DestroyChildren(Transform parent)
     {
-        Debug.Log("Room has been joined!");
-        ActivatePanel("CreateRoom");
+        foreach (Transform child in parent)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
+    public override void OnLeftRoom()
+    {
+       Debug.Log("Left room successfully");
+       ActivatePanel("CreateRoom");
+       DestroyChildren(insideRoomPlayerList);
+    }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    public void ListRoomClicked()
+    {
+        PhotonNetwork.JoinLobby();
+    }
+
+    public override void OnJoinedLobby()
+    {
+        Debug.Log("Room list updated");
+        ActivatePanel("ListRooms");
+    }
+
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        Debug.Log("Room Update: " + roomList.Count);
+
+        // foreach loop, where the parameter of the method:List<RoomInfo> roomList
+        foreach (var room in roomList)
+        {
+            //creating a new instance of the GameObject prefab. Each prefab willrepresent a different room available on the master server.
+            var newRoomEntry = Instantiate(roomEntryPrefab, listRoomPanelContent);
+
+            //For each room entry on the list, we are getting access directly to it's RoomEntryscript. We are storing this access under a new variable newRoomEntryScript.
+            var newRoomEntryScript = newRoomEntry.GetComponent<RoomEntry>();
+            newRoomEntryScript.roomName = room.Name;
+            newRoomEntryScript.roomText.text = string.Format("{0} - ({1}/{2})", room.Name, room.PlayerCount, room.MaxPlayers);
+        }
+    }
+
+    public void LeaveLobbyClick()
+    {
+        PhotonNetwork.LeaveLobby();
+    }
+
+    public override void OnLeftLobby()
+    {
+        Debug.Log("Left lobby successfully");
+        ActivatePanel("Selection");
+    }
 
 }

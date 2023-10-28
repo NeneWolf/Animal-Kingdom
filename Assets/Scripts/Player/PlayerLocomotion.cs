@@ -1,13 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Android.Gradle;
 using UnityEngine;
 using UnityEngine.InputSystem.HID;
 
 public class PlayerLocomotion : MonoBehaviour
 {
-
-
     int shaderProperty;
 
     InputManager inputManager;
