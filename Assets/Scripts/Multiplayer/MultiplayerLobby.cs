@@ -25,11 +25,15 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
 
     Dictionary<string, RoomInfo> cachedRoomList;
 
+    //
+    public  GameObject startGameButton;
+
     //Random Name
     private void Start()
     {
         playerNameInput.text = playerName = string.Format("Player {0}", Random.Range(1, 10000));
         cachedRoomList = new Dictionary<string, RoomInfo>();
+        PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     public void LoginButtonClicked()
@@ -61,18 +65,25 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
 
     }
 
-    //Join Room by Name
-    public void JoinRoom(string roomName)
-    {
-        PhotonNetwork.JoinRoom(roomName);
-    }
-
     //Disconnect
     public void DisconnectButtonClick()
     {
         PhotonNetwork.Disconnect();
         ActivatePanel("Login");
     }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        Debug.Log("Disconnected from server.");
+        ActivatePanel("Login");
+    }
+
+    //Join Room by Name
+    public void JoinRoom(string roomName)
+    {
+        PhotonNetwork.JoinRoom(roomName);
+    }
+
 
 
     // Create Room
@@ -93,7 +104,6 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         Debug.Log("Room creation failed: " + message);
-        base.OnCreateRoomFailed(returnCode, message);
     }
 
     public override void OnJoinedRoom()
@@ -101,10 +111,13 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         Debug.Log("Joined room successfully");
         ActivatePanel("InsideRoom");
 
+        startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+
         foreach (var player in PhotonNetwork.PlayerList)
         {
             var playerListEntry = Instantiate(textPrefab, insideRoomPlayerList);
             playerListEntry.GetComponent<Text>().text = player.NickName;
+            playerListEntry.name = player.NickName;
         }
     }
 
@@ -172,10 +185,10 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     {
         Debug.Log("Left lobby successfully");
         DestroyChildren(listRoomPanelContent);
+        DestroyChildren(insideRoomPlayerList);
         cachedRoomList.Clear();
         ActivatePanel("Selection");
     }
-
 
     //
     public void UpdateCachedRoomList(List<RoomInfo> roomList)
@@ -199,5 +212,61 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     public void OnJoinRandomRoomClicked()
     {
         PhotonNetwork.JoinRandomRoom();
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.Log("Failed to join a Room - " + message);
+        //CreateARoom();
+    }
+
+    public override void OnJoinRandomFailed(short returnCode, string message)
+    {
+        Debug.Log("Failed to join a random room -" + message);
+    }
+
+    //
+    public override void OnPlayerEnteredRoom (Photon.Realtime.Player newPlayer)
+    {
+        Debug.Log("New player joined the room");
+
+
+        //Similarly to the OnJoinedRoom() method where we list allthe names of the players in the room
+        var playerListEntry = Instantiate(textPrefab, insideRoomPlayerList);
+        playerListEntry.GetComponent<Text>().text = newPlayer.NickName;
+
+        //This line sets the display name of the object we just instantiated, (the name that wesee in the Hierarchy in Unity), to the NickName of the new player. 
+        playerListEntry.name = newPlayer.NickName;
+    }
+
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
+        Debug.Log("Player left the room");
+
+        //We have been over foreach loops in the first task of this tutorial, but we will quicklyrecap as they are very powerful.
+        //Transform - is the type of the items that we have previously stored ininsideRoomPlayerList, and which the loop will iterate through.
+        //child - is the name that we are giving to the items stored in insideRoomPlayerList.
+        //We will only use this name to refer to these items while we are using the foreachloop.
+        foreach (Transform child in insideRoomPlayerList)
+        {
+            if (child.name == otherPlayer.NickName)
+            {
+                Destroy(child.gameObject);
+                break;
+            }
+        }
+    }
+
+    public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
+    {
+        startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+    }
+
+    public void StartGameClicked()
+    {
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+        PhotonNetwork.CurrentRoom.IsVisible = false;
+
+        PhotonNetwork.LoadLevel("GameScene_Multiplayer");
     }
 }
