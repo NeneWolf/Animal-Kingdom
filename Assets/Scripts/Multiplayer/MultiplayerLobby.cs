@@ -23,10 +23,13 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     public GameObject roomEntryPrefab;
     public Transform listRoomPanelContent;
 
+    Dictionary<string, RoomInfo> cachedRoomList;
+
     //Random Name
     private void Start()
     {
         playerNameInput.text = playerName = string.Format("Player {0}", Random.Range(1, 10000));
+        cachedRoomList = new Dictionary<string, RoomInfo>();
     }
 
     public void LoginButtonClicked()
@@ -105,17 +108,11 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         }
     }
 
-
+    // Leave room 
     public void LeaveRoom()
     {
         PhotonNetwork.LeaveRoom();
     }
-
-    //public override void OnLeftRoom()
-    //{
-    //    Debug.Log("Room has been joined!");
-    //    ActivatePanel("CreateRoom");
-    //}
 
     public void DestroyChildren(Transform parent)
     {
@@ -132,9 +129,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
        DestroyChildren(insideRoomPlayerList);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
+    // Display Room List
     public void ListRoomClicked()
     {
         PhotonNetwork.JoinLobby();
@@ -150,19 +145,24 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     {
         Debug.Log("Room Update: " + roomList.Count);
 
+        DestroyChildren(listRoomPanelContent);
+
+        UpdateCachedRoomList(roomList);
+
         // foreach loop, where the parameter of the method:List<RoomInfo> roomList
-        foreach (var room in roomList)
+        foreach (var room in cachedRoomList)
         {
             //creating a new instance of the GameObject prefab. Each prefab willrepresent a different room available on the master server.
             var newRoomEntry = Instantiate(roomEntryPrefab, listRoomPanelContent);
 
             //For each room entry on the list, we are getting access directly to it's RoomEntryscript. We are storing this access under a new variable newRoomEntryScript.
             var newRoomEntryScript = newRoomEntry.GetComponent<RoomEntry>();
-            newRoomEntryScript.roomName = room.Name;
-            newRoomEntryScript.roomText.text = string.Format("{0} - ({1}/{2})", room.Name, room.PlayerCount, room.MaxPlayers);
+            newRoomEntryScript.roomName = room.Key;
+            newRoomEntryScript.roomText.text = string.Format("{0} - ({1}/{2})", room.Key, room.Value.PlayerCount, room.Value.MaxPlayers);
         }
     }
 
+    // Leave Lobby
     public void LeaveLobbyClick()
     {
         PhotonNetwork.LeaveLobby();
@@ -171,7 +171,33 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     public override void OnLeftLobby()
     {
         Debug.Log("Left lobby successfully");
+        DestroyChildren(listRoomPanelContent);
+        cachedRoomList.Clear();
         ActivatePanel("Selection");
     }
 
+
+    //
+    public void UpdateCachedRoomList(List<RoomInfo> roomList)
+    {
+        foreach(var room in roomList)
+        {
+            //This IF statement is going to be our conditional check. If a rooms data shows that itis closed,
+            //invisible or has been removed from the list, it will be removed entirelyfrom our Dictionary.
+            if (!room.IsOpen || !room.IsVisible || room.RemovedFromList)
+            {
+                cachedRoomList.Remove(room.Name);
+            }
+            else
+            {
+                cachedRoomList[room.Name] = room;
+            }
+        }
+    }
+
+    //Random Room
+    public void OnJoinRandomRoomClicked()
+    {
+        PhotonNetwork.JoinRandomRoom();
+    }
 }

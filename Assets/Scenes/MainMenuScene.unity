@@ -404,6 +404,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6812360274888193154, guid: 63eeed59a09b7964188723bc31f849ad, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1375972603}
+    - target: {fileID: 6812360274888193154, guid: 63eeed59a09b7964188723bc31f849ad, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnJoinRandomRoomClicked
+      objectReference: {fileID: 0}
+    - target: {fileID: 6812360274888193154, guid: 63eeed59a09b7964188723bc31f849ad, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MultiplayerLobby, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 6812360274888193155, guid: 63eeed59a09b7964188723bc31f849ad, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -642,7 +654,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6812360275745540389, guid: 63eeed59a09b7964188723bc31f849ad, type: 3}
       propertyPath: m_ChildForceExpandHeight
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6812360275745540390, guid: 63eeed59a09b7964188723bc31f849ad, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -921,11 +933,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6812360276549421484, guid: 63eeed59a09b7964188723bc31f849ad, type: 3}
   m_PrefabInstance: {fileID: 1375972598}
   m_PrefabAsset: {fileID: 0}
---- !u!224 &1375972600 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6812360275954169340, guid: 63eeed59a09b7964188723bc31f849ad, type: 3}
-  m_PrefabInstance: {fileID: 1375972598}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1375972601 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6812360275745540390, guid: 63eeed59a09b7964188723bc31f849ad, type: 3}
@@ -953,9 +960,9 @@ MonoBehaviour:
   playerNameInput: {fileID: 1637475604}
   textPrefab: {fileID: 97159292144345420, guid: d8e8c69e49baba744ae848dd6739678d, type: 3}
   insideRoomPlayerList: {fileID: 1254021410}
-  listRoomPanel: {fileID: 1375972601}
+  listRoomPanel: {fileID: 1375972599}
   roomEntryPrefab: {fileID: 2667130366036724534, guid: 441c8085485e1cf4eb3fc2764938800c, type: 3}
-  listRoomPanelContent: {fileID: 1375972600}
+  listRoomPanelContent: {fileID: 1375972601}
 --- !u!1 &1477403028 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6812360274712863568, guid: 63eeed59a09b7964188723bc31f849ad, type: 3}
