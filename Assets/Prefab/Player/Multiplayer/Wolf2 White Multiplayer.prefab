@@ -6164,7 +6164,7 @@ GameObject:
   - component: {fileID: 931211861236016032}
   - component: {fileID: 4210122673750261474}
   m_Layer: 6
-  m_Name: Wolf2 White
+  m_Name: Wolf2 White Multiplayer
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

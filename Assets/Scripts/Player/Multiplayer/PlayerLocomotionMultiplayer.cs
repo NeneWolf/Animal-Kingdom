@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.HID;
 
-public class PlayerLocomotion : MonoBehaviour
+public class PlayerLocomotionMultiplayer : MonoBehaviour
 {
     int shaderProperty;
 
