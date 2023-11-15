@@ -1,14 +1,16 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerManager : MonoBehaviour
+public class Multi_PlayerManager : MonoBehaviour
 {
     Animator animator;
-    InputManager inputManager;
-    PlayerLocomotion playerLocomotion;
-    CameraManager cameraManager;
+    Multi_InputManager inputManager;
+    Multi_PlayerLocomotion playerLocomotion;
+    [SerializeField] GameObject cameraObject;
+    Multi_CameraManager cameraManager;
 
     [SerializeField]Slider healthSlider;
 
@@ -28,20 +30,33 @@ public class PlayerManager : MonoBehaviour
     public bool canSprint = true;
     public Image staminaRefillImage;
 
+    PhotonView photonView;
 
     private void Awake()
     {
-        inputManager = GetComponent<InputManager>();
-        playerLocomotion = GetComponent<PlayerLocomotion>();
-        cameraManager = FindAnyObjectByType<CameraManager>();
+        inputManager = GetComponent<Multi_InputManager>();
+        playerLocomotion = GetComponent<Multi_PlayerLocomotion>();
+        photonView = GetComponent<PhotonView>();
+
+        if (cameraObject != null)
+        {
+            cameraObject.GetComponent<Multi_CameraManager>().enabled = true;
+            cameraManager = cameraObject.GetComponent<Multi_CameraManager>();
+            cameraManager.WakeCamera();
+        }
+
         animator = GetComponent<Animator>();
 
         currentHealth = health;
         currentStamina = stamina;
     }
 
+
     private void Update()
     {
+        if (!photonView.IsMine)
+            return;
+
         inputManager.HandleAllInputs();
 
         if(currentHealth <= 0)
@@ -62,18 +77,25 @@ public class PlayerManager : MonoBehaviour
         }
 
         // Update UI
+        healthSlider.value = currentHealth;
         staminaRefillImage.fillAmount = currentStamina / stamina;
         healthRefillImage.fillAmount = currentHealth / health;
     }
 
     private void FixedUpdate()
     {
+        if(!photonView.IsMine)
+            return;
+
         playerLocomotion.HandleAllMovement();
         cameraManager.HandleAllCameraMovement();
     }
 
     private void LateUpdate()
     {
+        if (!photonView.IsMine)
+            return;
+
         isInteracting = animator.GetBool("isInteracting");
         playerLocomotion.isJumping = animator.GetBool("isJumping");
         animator.SetBool("isGrounded",playerLocomotion.isGrounded);

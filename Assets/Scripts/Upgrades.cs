@@ -19,7 +19,7 @@ public class Upgrades : MonoBehaviour
             switch (powerUp)
             {
                 case "AutoTarget":
-                    other.GetComponent<PlayerLocomotion>().HandleAutoTarget(autoTargetTimer);
+                    other.GetComponent<Multi_PlayerLocomotion>().HandleAutoTarget(autoTargetTimer);
                     break;
                 case "Heal":
                     //Add code

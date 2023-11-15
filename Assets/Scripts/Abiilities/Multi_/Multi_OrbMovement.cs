@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OrbMovement : MonoBehaviour
+public class Multi_OrbMovement : MonoBehaviour
 {
     public float fireSpeed = 10f;
     [SerializeField] float damage = 10f;
+    GameObject playerThatSpawnProjectile;
     GameObject target;
     Transform centerTransform;
     bool hasCenterTransform;
@@ -24,10 +25,11 @@ public class OrbMovement : MonoBehaviour
             BulletMovement();
     }
 
-    public void SpawnBullet(GameObject target,Transform center)
+    public void SpawnBullet(GameObject target,Transform center, GameObject playerSelf)
     {
         this.target = target;
         this.centerTransform = center;
+        this.playerThatSpawnProjectile = playerSelf;
     }
 
     void BulletMovement()
@@ -63,21 +65,23 @@ public class OrbMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-       if (collision.gameObject.layer == 7 || collision.gameObject.tag.Equals("Player") || collision.gameObject.tag.Equals("Enemy")) { 
+        Debug.Log(collision.gameObject.name);
 
-            if (collision.gameObject.tag.Equals("Player"))
-            {
-                collision.gameObject.GetComponent<PlayerManager>().TakeDamage(damage);
-            }
-            else if (collision.gameObject.tag.Equals("Enemy"))
-            {
-                 collision.gameObject.GetComponent<EnemyBehaviour>().TakeDamage(damage);
-            }
-
+       if (collision.gameObject.layer == 7) 
+        {
             ExplosionVFX();
             Destroy(gameObject);
         }
-
+       else if(collision.gameObject.tag.Equals("Player") && collision.gameObject != playerThatSpawnProjectile)
+        {
+            collision.gameObject.GetComponent<Multi_PlayerManager>().TakeDamage(damage);
+            ExplosionVFX();
+            Destroy(gameObject);
+        }
+       else
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void ExplosionVFX()

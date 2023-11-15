@@ -11,11 +11,18 @@ public class EnemyBehaviour : MonoBehaviour
 
     [HideInInspector]
     public int health = 100;
-    public Slider healthBar;
+    public float currentHealth;
+    bool isDead;
+    //public Slider healthBar;
 
     //MagicAttackVFX
     public float magicFireRate = 5f;
     float nextFire;
+
+    private void Awake()
+    {
+        currentHealth = health;
+    }
 
     private void OnTriggerStay(Collider other)
     {
@@ -41,7 +48,13 @@ public class EnemyBehaviour : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, 3f);
     }
 
-
-
-
+    public void TakeDamage(float damage)
+    {
+        currentHealth -= damage;
+        if (currentHealth <= 0)
+        {
+            currentHealth = 0;
+            isDead = true;
+        }
+    }
 }
