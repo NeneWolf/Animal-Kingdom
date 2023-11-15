@@ -6273,6 +6273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43ebab9b5fa9f0e4a8161d03553d7902, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthSlider: {fileID: 0}
   isInteracting: 0
   currentHealth: 0
   healthRefillImage: {fileID: 0}

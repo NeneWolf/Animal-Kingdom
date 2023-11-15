@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,10 +27,14 @@ public class Multi_InputManager : MonoBehaviour
     public bool isMoving;
 
     public bool isPrimaryAttack;
-    public bool isSecondaryAttack;  
+    public bool isSecondaryAttack;
+
+    PhotonView photonView;
 
     private void Awake()
     {
+        photonView = GetComponent<PhotonView>();
+
         animatorManager = GetComponent<Multi_AnimatorManager>();
         playerLocomotion = GetComponent<Multi_PlayerLocomotion>();
         playerManager = GetComponent<Multi_PlayerManager>();
@@ -59,21 +64,24 @@ public class Multi_InputManager : MonoBehaviour
     //
     private void OnDisable()
     {
-        playerControls.Disable();
+        if (!photonView.IsMine) { return; }
+        else
+            playerControls.Disable();
     }
 
     //Handle All the inputs and calls the functions
     public void HandleAllInputs()
     {
-        if (!playerManager.ReportDead())
+        if (!playerManager.ReportDead() && photonView.IsMine)
         {
             HandleMovementInput();
             HandleCameraInput();
             HandleSprintingInput();
             HandleJumpInput();
-            PrimaryAttack();
-            SecondaryAttack();
         }
+
+        PrimaryAttack();
+        SecondaryAttack();
     }
 
     private void HandleMovementInput()

@@ -1,4 +1,5 @@
 using Cinemachine;
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,6 +25,13 @@ public class Multi_OrbBehaviour : MonoBehaviour
     [Header("Effect")]
     [SerializeField] private GameObject powerUpVFX;
 
+    PhotonView photonView;
+
+
+    private void Awake()
+    {
+        photonView = GetComponent<PhotonView>();
+    }
 
     private void Start()
     {
@@ -39,7 +47,7 @@ public class Multi_OrbBehaviour : MonoBehaviour
     {
         Movement();
 
-        if(transform.GetComponent<SphereCollider>().enabled == true)
+        if (transform.GetComponent<SphereCollider>().enabled == true)
         {
             powerUpVFX.SetActive(true);
         }

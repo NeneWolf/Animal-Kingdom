@@ -9,7 +9,7 @@ public class Multi_PlayerManager : MonoBehaviour
     Animator animator;
     Multi_InputManager inputManager;
     Multi_PlayerLocomotion playerLocomotion;
-    [SerializeField] GameObject cameraObject;
+    GameObject cameraObject;
     Multi_CameraManager cameraManager;
 
     [SerializeField]Slider healthSlider;
@@ -38,58 +38,76 @@ public class Multi_PlayerManager : MonoBehaviour
         playerLocomotion = GetComponent<Multi_PlayerLocomotion>();
         photonView = GetComponent<PhotonView>();
 
-        if (cameraObject != null)
+        if (photonView.IsMine)
         {
-            cameraObject.GetComponent<Multi_CameraManager>().enabled = true;
-            cameraManager = cameraObject.GetComponent<Multi_CameraManager>();
-            cameraManager.WakeCamera();
+            cameraObject = GameObject.FindAnyObjectByType<Multi_CameraManager>().gameObject;
+            if (cameraObject != null)
+            {
+                cameraObject.GetComponent<Multi_CameraManager>().enabled = true;
+                cameraManager = cameraObject.GetComponent<Multi_CameraManager>();
+                cameraManager.WakeCamera(this.gameObject);
+            }
+
+            animator = GetComponent<Animator>();
+
+            currentHealth = health;
+            currentStamina = stamina;
         }
-
-        animator = GetComponent<Animator>();
-
-        currentHealth = health;
-        currentStamina = stamina;
+        else return;
     }
 
 
     private void Update()
     {
-        inputManager.HandleAllInputs();
-
-        if(currentHealth <= 0)
+        if(photonView.IsMine)
         {
-            isDead = true;
-        }
+            inputManager.HandleAllInputs();
 
-        if(currentStamina < stamina && !playerLocomotion.isSprinting)
-        {
-            // Recover stamina
-            currentStamina += stamina / timeToRecoverStamina * Time.deltaTime;
-
-            if(currentStamina >= stamina)
+            if (currentHealth <= 0)
             {
-                currentStamina = stamina;
-                canSprint = true;
+                isDead = true;
             }
-        }
 
-        // Update UI
-        healthSlider.value = currentHealth;
-        staminaRefillImage.fillAmount = currentStamina / stamina;
-        healthRefillImage.fillAmount = currentHealth / health;
+            if (currentStamina < stamina && !playerLocomotion.isSprinting)
+            {
+                // Recover stamina
+                currentStamina += stamina / timeToRecoverStamina * Time.deltaTime;
+
+                if (currentStamina >= stamina)
+                {
+                    currentStamina = stamina;
+                    canSprint = true;
+                }
+            }
+
+            // Update UI
+            healthSlider.value = currentHealth;
+            staminaRefillImage.fillAmount = currentStamina / stamina;
+            healthRefillImage.fillAmount = currentHealth / health;
+        }
+        else{ return; }
     }
 
     private void FixedUpdate()
     {
-        playerLocomotion.HandleAllMovement();
-        cameraManager.HandleAllCameraMovement();
+        if (photonView.IsMine)
+        {
+            playerLocomotion.HandleAllMovement();
+            cameraManager.HandleAllCameraMovement();
+        }
+        else return;
     }
 
     private void LateUpdate()
     {
-        isInteracting = animator.GetBool("isInteracting");
-        playerLocomotion.isJumping = animator.GetBool("isJumping");
-        animator.SetBool("isGrounded",playerLocomotion.isGrounded);
+        if (photonView.IsMine)
+        {
+            isInteracting = animator.GetBool("isInteracting");
+            playerLocomotion.isJumping = animator.GetBool("isJumping");
+            animator.SetBool("isGrounded", playerLocomotion.isGrounded);
+        }
+        else return;
+
     }
 
     public void TakeDamage(float damage)

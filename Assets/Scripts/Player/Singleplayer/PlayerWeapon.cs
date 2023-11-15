@@ -1,9 +1,10 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerWeapon : MonoBehaviour
+public class PlayerWeapon : MonoBehaviour, IPunObservable
 {
     PlayerLocomotion playerLocomotion;
     AnimatorManager animatorManager;
@@ -150,4 +151,14 @@ public class PlayerWeapon : MonoBehaviour
         isReloading = false;
     }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+
+        }
+        else
+        {
+
+        }
 }

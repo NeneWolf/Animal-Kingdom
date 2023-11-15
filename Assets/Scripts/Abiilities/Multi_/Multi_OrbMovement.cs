@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,8 @@ public class Multi_OrbMovement : MonoBehaviour
 
     [SerializeField] private GameObject explosionVFX;
 
+    public Photon.Realtime.Player owner;
+
     private void Awake()
     {
         StartCoroutine(DestroyBullet());
@@ -23,6 +26,7 @@ public class Multi_OrbMovement : MonoBehaviour
             BulletMovementToTarget();
         else
             BulletMovement();
+
     }
 
     public void SpawnBullet(GameObject target,Transform center, GameObject playerSelf)

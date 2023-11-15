@@ -33,11 +33,10 @@ public class Multi_CameraManager : MonoBehaviour
     public float minCollisionOffSet = 0.2f;
     public LayerMask collisionLayers;
 
-    [SerializeField] GameObject player;
     [SerializeField] Camera camera;
     PhotonView photonView;
 
-    public void WakeCamera()
+    public void WakeCamera(GameObject player)
     {
         targetTransform = player.transform;
         inputManager = player.GetComponent<Multi_InputManager>();
@@ -51,9 +50,14 @@ public class Multi_CameraManager : MonoBehaviour
 
     public void HandleAllCameraMovement()
     {
-        FollowPlayer();
-        RotationCamera();
-        HandleCameraCollisions();
+        if (photonView.IsMine)
+        {
+            FollowPlayer();
+            RotationCamera();
+            HandleCameraCollisions();
+        }
+        else return;
+
     }
 
     private void FollowPlayer()

@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.HID;
 
-public class Multi_PlayerLocomotion : MonoBehaviour
+public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
 {
     int shaderProperty;
 
-    InputManager inputManager;
+    Multi_InputManager inputManager;
     Multi_PlayerManager playerManager;
     Multi_AnimatorManager animatorManager;
     Multi_PlayerWeapon playerWeapon;
@@ -62,19 +62,23 @@ public class Multi_PlayerLocomotion : MonoBehaviour
     [Header("CanvasForOtherPlayers")]
     public GameObject canvas;
 
+    int currentMaterial;
+
+
     PhotonView photonView;
 
     private void Awake()
     {
-        inputManager = GetComponent<InputManager>();
+        inputManager = GetComponent<Multi_InputManager>();
+
         photonView = GetComponent<PhotonView>();
-        cameraObject = Camera.main.transform;
+
         playerRigidbody = GetComponent<Rigidbody>();
         playerManager = GetComponent<Multi_PlayerManager>();
         animatorManager = GetComponent<Multi_AnimatorManager>();
         playerWeapon = GetComponent<Multi_PlayerWeapon>();
+        currentMaterial = 0;
     }
-    //Test
 
     void Start()
     {
@@ -83,7 +87,10 @@ public class Multi_PlayerLocomotion : MonoBehaviour
     
     void Update()
     {
-        if(!photonView.IsMine)
+        FadeInInvisible();
+        FadeOutInvisible();
+
+        if (!photonView.IsMine)
         {
             canvas.SetActive(!isInvisible);
             return;
@@ -91,20 +98,19 @@ public class Multi_PlayerLocomotion : MonoBehaviour
         else
         {
             canvas.SetActive(false);
-        }
-
-        FadeInInvisible();
-        FadeOutInvisible();
-
-        
+        } 
     }
 
     public void HandleAllMovement()
     {
-        HandleFallingAndLanding();
+        if (photonView.IsMine)
+        {
+            HandleFallingAndLanding();
 
-        if (playerManager.isInteracting)
-            return;
+            if (playerManager.isInteracting)
+                return;
+        }
+        else return;
     }
 
     #region OldMovement
@@ -233,11 +239,9 @@ public class Multi_PlayerLocomotion : MonoBehaviour
             isGoingInvisible = true;
     }
 
+
     void FadeInInvisible()
     {
-        // Add Timer to go invisible
-
-        //
         if (isGoingInvisible == true)
         {
             //Disable weapons & Magic mask
@@ -248,6 +252,7 @@ public class Multi_PlayerLocomotion : MonoBehaviour
 
             //Grab the new material
             playerBody.GetComponent<Renderer>().material = playerMaterials[1];
+            currentMaterial = 1;
 
             //Start Timer
             timerInvisibleFadeIn += Time.deltaTime * invisibleTimer;
@@ -263,12 +268,8 @@ public class Multi_PlayerLocomotion : MonoBehaviour
                 isInvisible = true;
 
                 playerBody.GetComponent<Renderer>().material = playerMaterials[2];
+                currentMaterial = 3;
 
-                if (!photonView.IsMine)
-                {
-                    playerBody.SetActive(false);
-                }
-                
                 timerInvisibleFadeIn = 0;
             }
         }
@@ -280,7 +281,7 @@ public class Multi_PlayerLocomotion : MonoBehaviour
         {
             playerDisableElements[0].SetActive(true);
             playerBody.GetComponent<Renderer>().material = playerMaterials[1];
-
+            currentMaterial = 1;
             timerVisibleFadeOut += Time.deltaTime * visibleTimer;
 
             shaderProperty = Shader.PropertyToID("_cutoff");
@@ -290,10 +291,9 @@ public class Multi_PlayerLocomotion : MonoBehaviour
             {
                 isGoingVisible = false;
                 isInvisible = false;
+
                 playerBody.GetComponent<Renderer>().material = playerMaterials[0];
-
-                if (!photonView.IsMine) { playerBody.SetActive(true);}
-
+                currentMaterial = 0;
                 timerVisibleFadeOut = 0;
             }
         }
@@ -318,5 +318,26 @@ public class Multi_PlayerLocomotion : MonoBehaviour
         powerUpEffect.SetActive(true);
         yield return new WaitForSeconds(2f);
         powerUpEffect.SetActive(false);
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if(stream.IsWriting)
+        {
+            stream.SendNext(isGoingInvisible);
+            stream.SendNext(isInvisible);
+            stream.SendNext(isGoingVisible);
+            stream.SendNext(currentMaterial);
+            stream.SendNext(timerVisibleFadeOut);
+        }
+        else
+        {
+            isGoingInvisible = (bool)stream.ReceiveNext();
+            isInvisible = (bool)stream.ReceiveNext();
+            isGoingInvisible = (bool)stream.ReceiveNext();
+            playerBody.GetComponent<Renderer>().material = playerMaterials[(int)stream.ReceiveNext()];
+            timerVisibleFadeOut = (float)stream.ReceiveNext();
+
+        }
     }
 }
