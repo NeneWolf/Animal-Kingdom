@@ -34,14 +34,15 @@ public class Multi_CameraManager : MonoBehaviour
     public LayerMask collisionLayers;
 
     [SerializeField] GameObject player;
+    [SerializeField] Camera camera;
     PhotonView photonView;
 
     public void WakeCamera()
     {
-        targetTransform = FindAnyObjectByType<Multi_PlayerManager>().transform;
-        inputManager = FindAnyObjectByType<Multi_InputManager>();
+        targetTransform = player.transform;
+        inputManager = player.GetComponent<Multi_InputManager>();
         photonView = player.GetComponent<PhotonView>();
-        cameraTransform = Camera.main.transform;
+        cameraTransform = camera.transform;
         defaultPosition = cameraTransform.localPosition.z;
 
         // Lock mouse cursor to the center of the screen
@@ -50,9 +51,6 @@ public class Multi_CameraManager : MonoBehaviour
 
     public void HandleAllCameraMovement()
     {
-        if(!photonView.IsMine)
-            return;
-
         FollowPlayer();
         RotationCamera();
         HandleCameraCollisions();

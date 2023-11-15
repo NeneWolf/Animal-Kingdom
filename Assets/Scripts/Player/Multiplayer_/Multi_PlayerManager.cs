@@ -54,9 +54,6 @@ public class Multi_PlayerManager : MonoBehaviour
 
     private void Update()
     {
-        if (!photonView.IsMine)
-            return;
-
         inputManager.HandleAllInputs();
 
         if(currentHealth <= 0)
@@ -84,18 +81,12 @@ public class Multi_PlayerManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(!photonView.IsMine)
-            return;
-
         playerLocomotion.HandleAllMovement();
         cameraManager.HandleAllCameraMovement();
     }
 
     private void LateUpdate()
     {
-        if (!photonView.IsMine)
-            return;
-
         isInteracting = animator.GetBool("isInteracting");
         playerLocomotion.isJumping = animator.GetBool("isJumping");
         animator.SetBool("isGrounded",playerLocomotion.isGrounded);

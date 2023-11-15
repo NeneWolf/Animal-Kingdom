@@ -20,4 +20,6 @@ public class ScenesManager : MonoBehaviour
 
     public void ChangeSceneByName(string name) { SceneName = name; LoadSelectedSceneByName(); }
     public void ChangeSceneByID(int ID) { sceneID = ID; LoadSelectedSceneByID(); }
+
+    public void QuitGame() { Application.Quit(); }
 }

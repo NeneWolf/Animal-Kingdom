@@ -13822,6 +13822,71 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1678254760}
   m_Mesh: {fileID: 4300000, guid: 2c7af3c4dc7207a43b3b8baeed6d5ba5, type: 3}
+--- !u!1001 &1686490887
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3734495258565945286, guid: 9a951246800ec934a9f5059fe1f14bce, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 44.332188
+      objectReference: {fileID: 0}
+    - target: {fileID: 3734495258565945286, guid: 9a951246800ec934a9f5059fe1f14bce, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.11025715
+      objectReference: {fileID: 0}
+    - target: {fileID: 3734495258565945286, guid: 9a951246800ec934a9f5059fe1f14bce, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 15.435841
+      objectReference: {fileID: 0}
+    - target: {fileID: 3734495258565945286, guid: 9a951246800ec934a9f5059fe1f14bce, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3734495258565945286, guid: 9a951246800ec934a9f5059fe1f14bce, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3734495258565945286, guid: 9a951246800ec934a9f5059fe1f14bce, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3734495258565945286, guid: 9a951246800ec934a9f5059fe1f14bce, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3734495258565945286, guid: 9a951246800ec934a9f5059fe1f14bce, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3734495258565945286, guid: 9a951246800ec934a9f5059fe1f14bce, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3734495258565945286, guid: 9a951246800ec934a9f5059fe1f14bce, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4435090954445902589, guid: 9a951246800ec934a9f5059fe1f14bce, type: 3}
+      propertyPath: m_Name
+      value: Wolf2 White SinglePlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 4672092285308125644, guid: 9a951246800ec934a9f5059fe1f14bce, type: 3}
+      propertyPath: healthRefillImage
+      value: 
+      objectReference: {fileID: 2123122604}
+    - target: {fileID: 4672092285308125644, guid: 9a951246800ec934a9f5059fe1f14bce, type: 3}
+      propertyPath: staminaRefillImage
+      value: 
+      objectReference: {fileID: 1789573152}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9a951246800ec934a9f5059fe1f14bce, type: 3}
 --- !u!1 &1703656490
 GameObject:
   m_ObjectHideFlags: 0
@@ -46943,79 +47008,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7116149066132460619}
   m_Mesh: {fileID: 4300000, guid: 5d1150fbaa24aa24da8c409fd45a1433, type: 3}
---- !u!1001 &7268785154006845954
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 180643965721815794, guid: 6f4b7d51332df994f89ce6e70363e160, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 111.854256
-      objectReference: {fileID: 0}
-    - target: {fileID: 180643965721815794, guid: 6f4b7d51332df994f89ce6e70363e160, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.07839966
-      objectReference: {fileID: 0}
-    - target: {fileID: 180643965721815794, guid: 6f4b7d51332df994f89ce6e70363e160, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -40.162457
-      objectReference: {fileID: 0}
-    - target: {fileID: 180643965721815794, guid: 6f4b7d51332df994f89ce6e70363e160, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 180643965721815794, guid: 6f4b7d51332df994f89ce6e70363e160, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 180643965721815794, guid: 6f4b7d51332df994f89ce6e70363e160, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 180643965721815794, guid: 6f4b7d51332df994f89ce6e70363e160, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 180643965721815794, guid: 6f4b7d51332df994f89ce6e70363e160, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 180643965721815794, guid: 6f4b7d51332df994f89ce6e70363e160, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 180643965721815794, guid: 6f4b7d51332df994f89ce6e70363e160, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 597838745226305964, guid: 6f4b7d51332df994f89ce6e70363e160, type: 3}
-      propertyPath: healthRefillImage
-      value: 
-      objectReference: {fileID: 2123122604}
-    - target: {fileID: 597838745226305964, guid: 6f4b7d51332df994f89ce6e70363e160, type: 3}
-      propertyPath: staminaRefillImage
-      value: 
-      objectReference: {fileID: 1789573152}
-    - target: {fileID: 4631393189195541732, guid: 6f4b7d51332df994f89ce6e70363e160, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4631393189195541732, guid: 6f4b7d51332df994f89ce6e70363e160, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6956580071159695183, guid: 6f4b7d51332df994f89ce6e70363e160, type: 3}
-      propertyPath: m_Name
-      value: Wolf2White_SinglePlayer
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6f4b7d51332df994f89ce6e70363e160, type: 3}
 --- !u!4 &7320571489928033539
 Transform:
   m_ObjectHideFlags: 0
@@ -47924,7 +47916,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &7599687472084685373
 GameObject:
   m_ObjectHideFlags: 0
@@ -53754,4 +53746,4 @@ SceneRoots:
   - {fileID: 369892110}
   - {fileID: 1877435037}
   - {fileID: 201706845}
-  - {fileID: 7268785154006845954}
+  - {fileID: 1686490887}

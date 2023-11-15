@@ -85,11 +85,14 @@ public class Multi_PlayerLocomotion : MonoBehaviour
     {
         if(!photonView.IsMine)
         {
-            canvas.active = !isInvisible;
+            canvas.SetActive(!isInvisible);
             return;
         }
+        else
+        {
+            canvas.SetActive(false);
+        }
 
-        canvas.active = false;
         FadeInInvisible();
         FadeOutInvisible();
 
@@ -259,13 +262,11 @@ public class Multi_PlayerLocomotion : MonoBehaviour
                 isGoingInvisible = false;
                 isInvisible = true;
 
+                playerBody.GetComponent<Renderer>().material = playerMaterials[2];
+
                 if (!photonView.IsMine)
                 {
-                    playerBody.active = false;
-                }
-                else
-                {
-                    playerBody.GetComponent<Renderer>().material = playerMaterials[2];
+                    playerBody.SetActive(false);
                 }
                 
                 timerInvisibleFadeIn = 0;
@@ -291,7 +292,7 @@ public class Multi_PlayerLocomotion : MonoBehaviour
                 isInvisible = false;
                 playerBody.GetComponent<Renderer>().material = playerMaterials[0];
 
-                if (!photonView.IsMine) { playerBody.active = true;}
+                if (!photonView.IsMine) { playerBody.SetActive(true);}
 
                 timerVisibleFadeOut = 0;
             }
