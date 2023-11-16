@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Multi_OrbBehaviour : MonoBehaviour
+public class Multi_OrbBehaviour : MonoBehaviour, IPunObservable
 {
     public Transform centerTransform;
     [SerializeField] GameObject projectile;
     [SerializeField] GameObject self;
+    [SerializeField] Multi_PlayerManager multi_PlayerManager;
 
     //public Transform parentTransform;
     public float orbitSpeed = 30f;  // The speed of the orbit in degrees per second.
@@ -31,6 +32,7 @@ public class Multi_OrbBehaviour : MonoBehaviour
     private void Awake()
     {
         photonView = GetComponent<PhotonView>();
+        multi_PlayerManager = self.GetComponent<Multi_PlayerManager>();
     }
 
     private void Start()
@@ -87,9 +89,22 @@ public class Multi_OrbBehaviour : MonoBehaviour
         transform.position = centerTransform.position + offset;
     }
 
-    public void FireBullet(GameObject target)
+    [PunRPC]
+    public void FireBullet(GameObject target, Quaternion quaternion)
     {
-        GameObject proj = Instantiate(projectile,transform.position,Quaternion.identity);
-        proj.GetComponent<Multi_OrbMovement>().SpawnBullet(target, centerTransform, self);
+        GameObject proj = Instantiate(projectile,transform.position, quaternion);
+        proj.GetComponent<Multi_OrbMovement>().SpawnBullet(target, centerTransform, self, photonView.Owner);
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(gameObject.activeInHierarchy);
+        }
+        else
+        {
+            gameObject.SetActive((bool)stream.ReceiveNext());
+        }
     }
 }

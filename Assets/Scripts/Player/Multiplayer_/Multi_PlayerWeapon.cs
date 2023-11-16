@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -10,7 +11,6 @@ public class Multi_PlayerWeapon : MonoBehaviour
 
     [Header("Projectile information")]
     [SerializeField] private GameObject WeaponOrbStorage;
-
 
     [Header("Info")]
     [SerializeField] private List<GameObject> weapon;
@@ -30,10 +30,13 @@ public class Multi_PlayerWeapon : MonoBehaviour
     bool isReloading;
     [SerializeField] private int reloadTime;
 
+    GameObject self;
+
     private void Awake()
     {
         animatorManager = GetComponent<Multi_AnimatorManager>();
         playerLocomotion = GetComponent<Multi_PlayerLocomotion>();
+        self = this.gameObject;
     }
 
     void Start()
@@ -64,6 +67,7 @@ public class Multi_PlayerWeapon : MonoBehaviour
             reloadFullChargeSkin.gameObject.SetActive(false);
     }
 
+
     public void Shoot(bool autoTarget)
     {
         if (isReloading == false && currentWeapons > 0)
@@ -79,12 +83,14 @@ public class Multi_PlayerWeapon : MonoBehaviour
 
 
             animatorManager.PlayTargetAnimation("PrimaryAttack", false);
-
-            
             weapon[currentWeapons-1].GetComponent<MeshRenderer>().enabled = false;
             weapon[currentWeapons-1].GetComponent<SphereCollider>().enabled = false;
 
-            weapon[currentWeapons-1].GetComponent<Multi_OrbBehaviour>().FireBullet(currentTarget);
+            weapon[currentWeapons - 1].GetPhotonView().RPC("FireBullet", 
+                RpcTarget.All,
+                currentTarget, 
+                self.GetComponent<Multi_PlayerManager>().cameraObject.transform.rotation);
+           //weapon[currentWeapons-1].GetComponent<Multi_OrbBehaviour>().FireBullet(currentTarget);
 
             currentWeapons--;
         }
@@ -104,7 +110,7 @@ public class Multi_PlayerWeapon : MonoBehaviour
 
         foreach (RaycastHit hit in hits)
         {
-            if (hit.transform.gameObject.tag == "Enemy")
+            if (hit.transform.gameObject.tag == "Player" && hit.transform.gameObject != self.gameObject)
             {
                 target = hit.transform.gameObject;
 
@@ -149,5 +155,4 @@ public class Multi_PlayerWeapon : MonoBehaviour
         currentWeapons = weapon.Count;
         isReloading = false;
     }
-
 }

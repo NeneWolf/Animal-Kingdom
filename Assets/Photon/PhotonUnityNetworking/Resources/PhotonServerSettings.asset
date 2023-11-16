@@ -41,6 +41,10 @@ MonoBehaviour:
   - RespawnSpaceship
   - FadeInInvisible
   - FadeOutInvisible
+  - FireBullet
+  - Shoot
+  - BulletMovement
+  - BulletMovementToTarget
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

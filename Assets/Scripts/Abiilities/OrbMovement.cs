@@ -83,6 +83,7 @@ public class OrbMovement : MonoBehaviour
     private void ExplosionVFX()
     {
         Instantiate(explosionVFX, transform.position, Quaternion.identity);
+        
     }
 
     IEnumerator DestroyBullet()

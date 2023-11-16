@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public class Multi_OrbMovement : MonoBehaviour
@@ -13,13 +14,14 @@ public class Multi_OrbMovement : MonoBehaviour
     bool hasCenterTransform;
 
     [SerializeField] private GameObject explosionVFX;
-
-    public Photon.Realtime.Player owner;
+    public Photon.Realtime.Player Owner { get; private set; }
 
     private void Awake()
     {
         StartCoroutine(DestroyBullet());
+
     }
+
     private void Update()
     {
         if (target != null)
@@ -29,37 +31,31 @@ public class Multi_OrbMovement : MonoBehaviour
 
     }
 
-    public void SpawnBullet(GameObject target,Transform center, GameObject playerSelf)
+    public void SpawnBullet(GameObject target, Transform center, GameObject playerSelf, Photon.Realtime.Player owner)
     {
         this.target = target;
         this.centerTransform = center;
         this.playerThatSpawnProjectile = playerSelf;
+        this.Owner = owner;
     }
 
+    [PunRPC]
     void BulletMovement()
     {
         if (!hasCenterTransform)
         {
             hasCenterTransform = true;
-
-            // Assuming you have a reference to the camera or its transform
-            Camera mainCamera = Camera.main;
-            if (mainCamera != null)
-            {
-                // Set the forward direction of the bullet to face the camera
-                transform.forward = mainCamera.transform.forward;
-            }
-            else
-            {
-                // Handle the case where the camera reference is not available
-                Debug.LogError("Main camera not found!");
-            }
         }
 
-        // Move towards the center of the camera
-        transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, fireSpeed * Time.deltaTime);
+        // Calculate the new position with a downward movement on the Y-axis
+        Vector3 newPosition = transform.position + transform.forward * fireSpeed * Time.deltaTime;
+        newPosition.y -= 0.003f; // Adjust this value to control the speed of downward movement
+
+        // Move towards the new position
+        transform.position = Vector3.MoveTowards(transform.position, newPosition, fireSpeed * Time.deltaTime);
     }
 
+    [PunRPC]
     void BulletMovementToTarget()
     {
         transform.LookAt(target.transform);
@@ -69,21 +65,17 @@ public class Multi_OrbMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.gameObject.name);
-
-       if (collision.gameObject.layer == 7) 
+        UnityEngine.Debug.Log("Collision");
+        if (collision.gameObject.layer == 7)
         {
             ExplosionVFX();
             Destroy(gameObject);
         }
-       else if(collision.gameObject.tag.Equals("Player") && collision.gameObject != playerThatSpawnProjectile)
+        else if (collision.gameObject.tag.Equals("Player") && collision.gameObject != playerThatSpawnProjectile)
         {
+            UnityEngine.Debug.Log("Hit player");
             collision.gameObject.GetComponent<Multi_PlayerManager>().TakeDamage(damage);
             ExplosionVFX();
-            Destroy(gameObject);
-        }
-       else
-        {
             Destroy(gameObject);
         }
     }

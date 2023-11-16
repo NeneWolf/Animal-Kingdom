@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerWeapon : MonoBehaviour, IPunObservable
+public class PlayerWeapon : MonoBehaviour
 {
     PlayerLocomotion playerLocomotion;
     AnimatorManager animatorManager;
@@ -150,15 +150,4 @@ public class PlayerWeapon : MonoBehaviour, IPunObservable
         currentWeapons = weapon.Count;
         isReloading = false;
     }
-
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-
-        }
-        else
-        {
-
-        }
 }

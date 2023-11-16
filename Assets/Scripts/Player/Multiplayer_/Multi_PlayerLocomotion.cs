@@ -72,7 +72,6 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
         inputManager = GetComponent<Multi_InputManager>();
 
         photonView = GetComponent<PhotonView>();
-
         playerRigidbody = GetComponent<Rigidbody>();
         playerManager = GetComponent<Multi_PlayerManager>();
         animatorManager = GetComponent<Multi_AnimatorManager>();
@@ -228,6 +227,7 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
 
         if ((isGrounded && Time.time > nextFire) && !isInvisible)
         {
+            //photonView.RPC("Shoot", RpcTarget.All,autoTarget);
             playerWeapon.Shoot(autoTarget);
         }
     }
@@ -268,6 +268,7 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
                 isInvisible = true;
 
                 playerBody.GetComponent<Renderer>().material = playerMaterials[2];
+
                 currentMaterial = 3;
 
                 timerInvisibleFadeIn = 0;
@@ -327,16 +328,35 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
             stream.SendNext(isGoingInvisible);
             stream.SendNext(isInvisible);
             stream.SendNext(isGoingVisible);
+
             stream.SendNext(currentMaterial);
             stream.SendNext(timerVisibleFadeOut);
+            stream.SendNext(timerInvisibleFadeIn);
+
+            stream.SendNext(playerDisableElements[0].activeInHierarchy);
+            stream.SendNext(fadeOutTime);
+            stream.SendNext(fadeInTime);
+
+            stream.SendNext(autoTarget);
+            stream.SendNext(powerUpEffect.activeInHierarchy);
+
         }
         else
         {
             isGoingInvisible = (bool)stream.ReceiveNext();
             isInvisible = (bool)stream.ReceiveNext();
-            isGoingInvisible = (bool)stream.ReceiveNext();
+            isGoingVisible = (bool)stream.ReceiveNext();
+
             playerBody.GetComponent<Renderer>().material = playerMaterials[(int)stream.ReceiveNext()];
             timerVisibleFadeOut = (float)stream.ReceiveNext();
+            timerInvisibleFadeIn = (float)stream.ReceiveNext();
+
+            playerDisableElements[0].SetActive((bool)stream.ReceiveNext());
+            fadeOutTime = (float)stream.ReceiveNext();
+            fadeInTime = (float)stream.ReceiveNext();
+
+            autoTarget = (bool)stream.ReceiveNext();
+            powerUpEffect.SetActive((bool)stream.ReceiveNext());
 
         }
     }

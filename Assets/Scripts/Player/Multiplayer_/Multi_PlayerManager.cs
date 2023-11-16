@@ -1,15 +1,16 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Multi_PlayerManager : MonoBehaviour
+public class Multi_PlayerManager : MonoBehaviour, IPunObservable
 {
     Animator animator;
     Multi_InputManager inputManager;
     Multi_PlayerLocomotion playerLocomotion;
-    GameObject cameraObject;
+    public GameObject cameraObject;
     Multi_CameraManager cameraManager;
 
     [SerializeField]Slider healthSlider;
@@ -21,14 +22,15 @@ public class Multi_PlayerManager : MonoBehaviour
     bool isDead;
     float health = 100f;
     public float currentHealth;
-    public Image healthRefillImage;
+    [SerializeField] Image healthRefillImage;
+    CapsuleCollider capsuleCollider;
 
     [Header("Stamina Information")]
     float stamina = 100f;
     public float currentStamina;
     public float timeToRecoverStamina = 3f;
     public bool canSprint = true;
-    public Image staminaRefillImage;
+    [SerializeField] Image staminaRefillImage;
 
     PhotonView photonView;
 
@@ -37,6 +39,10 @@ public class Multi_PlayerManager : MonoBehaviour
         inputManager = GetComponent<Multi_InputManager>();
         playerLocomotion = GetComponent<Multi_PlayerLocomotion>();
         photonView = GetComponent<PhotonView>();
+        capsuleCollider = GetComponent<CapsuleCollider>();
+
+        healthRefillImage = GameObject.FindGameObjectWithTag("HealthUIFill").GetComponent<Image>();
+        staminaRefillImage = GameObject.FindGameObjectWithTag("StaminaUIFill").GetComponent<Image>();
 
         if (photonView.IsMine)
         {
@@ -56,7 +62,6 @@ public class Multi_PlayerManager : MonoBehaviour
         else return;
     }
 
-
     private void Update()
     {
         if(photonView.IsMine)
@@ -66,6 +71,12 @@ public class Multi_PlayerManager : MonoBehaviour
             if (currentHealth <= 0)
             {
                 isDead = true;
+                animator.SetBool("isDead", true);
+                capsuleCollider.enabled = false;
+            }
+            else if(currentHealth > 0)
+            {
+                capsuleCollider.enabled = true;
             }
 
             if (currentStamina < stamina && !playerLocomotion.isSprinting)
@@ -86,6 +97,7 @@ public class Multi_PlayerManager : MonoBehaviour
             healthRefillImage.fillAmount = currentHealth / health;
         }
         else{ return; }
+
     }
 
     private void FixedUpdate()
@@ -116,11 +128,10 @@ public class Multi_PlayerManager : MonoBehaviour
             playerLocomotion.isGoingVisible = true;
 
         currentHealth -= damage;
+
         if(currentHealth <= 0)
         {
             currentHealth = 0;
-            isDead = true;
-            animator.SetBool("isDead", true);
         }
     }
 
@@ -137,5 +148,19 @@ public class Multi_PlayerManager : MonoBehaviour
     public bool ReportDead()
     {
         return isDead;
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(currentHealth);
+            stream.SendNext(isDead);
+        }
+        else
+        {
+            currentHealth = (float)stream.ReceiveNext();
+            isDead = (bool)stream.ReceiveNext();
+        }
     }
 }
