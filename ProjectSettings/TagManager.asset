@@ -13,6 +13,7 @@ TagManager:
   - PlayerSpawnPoint
   - HealthUIFill
   - StaminaUIFill
+  - RespawnCanvas
   layers:
   - Default
   - TransparentFX

@@ -12044,10 +12044,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.35
+  m_Radius: 0.4
   m_Height: 1.68
   m_Direction: 2
-  m_Center: {x: 0.034346804, y: 0.39, z: 0.27000004}
+  m_Center: {x: 0.034346804, y: 0.48, z: 0.27000004}
 --- !u!54 &8443637124010631936
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -12166,6 +12166,7 @@ MonoBehaviour:
   autoTarget: 0
   timer: 0
   canvas: {fileID: 3617787440771308195}
+  playerMagicPA: {fileID: 6643457393399729858}
 --- !u!114 &1385086575639748066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12187,6 +12188,7 @@ MonoBehaviour:
   timeToRecoverStamina: 3
   canSprint: 1
   staminaRefillImage: {fileID: 0}
+  respawnTime: 10
 --- !u!114 &7512771643397114058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12204,6 +12206,7 @@ MonoBehaviour:
   currentWeapons: 0
   projectileAttackRange: 10
   TargetCheck: {fileID: 6173580444191951022}
+  currentTarget: {fileID: 0}
   reloadFullChargeSkin: {fileID: 6643457393399729858}
   reloadTime: 5
 --- !u!114 &1025233734158828750
@@ -12264,6 +12267,7 @@ MonoBehaviour:
   - {fileID: 1482282347450033869}
   - {fileID: 1385086575639748066}
   - {fileID: 7512771643397114058}
+  - {fileID: 4983201600583152962}
   - {fileID: 5097986656421827306}
   - {fileID: 575807249235949822}
   sceneViewId: 0
@@ -12324,6 +12328,9 @@ MonoBehaviour:
   - Type: 4
     SynchronizeType: 2
     Name: PrimaryAttack
+  - Type: 4
+    SynchronizeType: 2
+    Name: isRespawning
   m_SynchronizeLayers:
   - SynchronizeType: 1
     LayerIndex: 0
@@ -17830,6 +17837,10 @@ PrefabInstance:
       propertyPath: centerTransform
       value: 
       objectReference: {fileID: 3874431939824197178}
+    - target: {fileID: 5002293010936276628, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
+      propertyPath: multi_PlayerManager
+      value: 
+      objectReference: {fileID: 1385086575639748066}
     - target: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
       propertyPath: m_Name
       value: Multi_Sphere (1)
@@ -17883,22 +17894,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7079643097385168835}
-    - targetCorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7688715070090019771}
+      insertIndex: 5
+      addedObject: {fileID: 6759639541742084659}
   m_SourcePrefab: {fileID: 100100000, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
---- !u!1 &6416520637401653969 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-  m_PrefabInstance: {fileID: 298010521167999969}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7079643097385168835
+--- !u!114 &2318278083470095069 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 2598176071845331260, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
+  m_PrefabInstance: {fileID: 298010521167999969}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6416520637401653969}
   m_Enabled: 1
@@ -17906,11 +17908,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
---- !u!114 &7688715070090019771
+--- !u!114 &4704300082106373493 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5002293010936276628, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
+  m_PrefabInstance: {fileID: 298010521167999969}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6416520637401653969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1ea80c1a7497e0419b1eef63965fdad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &6416520637401653969 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
+  m_PrefabInstance: {fileID: 298010521167999969}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6759639541742084659
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -17928,7 +17942,9 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 4704300082106373493}
+  - {fileID: 2318278083470095069}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -18087,6 +18103,10 @@ PrefabInstance:
       propertyPath: centerTransform
       value: 
       objectReference: {fileID: 3874431939824197178}
+    - target: {fileID: 5002293010936276628, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
+      propertyPath: multi_PlayerManager
+      value: 
+      objectReference: {fileID: 1385086575639748066}
     - target: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
       propertyPath: m_Name
       value: Multi_Sphere (3)
@@ -18140,34 +18160,15 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2446728481914272980}
-    - targetCorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4877254414190413399}
+      insertIndex: 5
+      addedObject: {fileID: 3353452502861925776}
   m_SourcePrefab: {fileID: 100100000, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
 --- !u!1 &6019660150471026758 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
   m_PrefabInstance: {fileID: 1055127058228951414}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2446728481914272980
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6019660150471026758}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
---- !u!114 &4877254414190413399
+--- !u!114 &3353452502861925776
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -18234,6 +18235,10 @@ PrefabInstance:
       propertyPath: centerTransform
       value: 
       objectReference: {fileID: 3874431939824197178}
+    - target: {fileID: 5002293010936276628, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
+      propertyPath: multi_PlayerManager
+      value: 
+      objectReference: {fileID: 1385086575639748066}
     - target: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
       propertyPath: m_Name
       value: Multi_Sphere (2)
@@ -18287,22 +18292,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 523195727473970737}
-    - targetCorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6468383390827263924}
+      insertIndex: 5
+      addedObject: {fileID: 3590821119694823333}
   m_SourcePrefab: {fileID: 100100000, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
---- !u!1 &4636923617448673551 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-  m_PrefabInstance: {fileID: 2123192193968508991}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &523195727473970737
+--- !u!114 &4141494517673152771 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 2598176071845331260, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
+  m_PrefabInstance: {fileID: 2123192193968508991}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4636923617448673551}
   m_Enabled: 1
@@ -18310,11 +18306,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
---- !u!114 &6468383390827263924
+--- !u!1 &4636923617448673551 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
+  m_PrefabInstance: {fileID: 2123192193968508991}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3590821119694823333
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -18334,7 +18331,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 6349141922181199531}
-  - {fileID: 523195727473970737}
+  - {fileID: 4141494517673152771}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -18614,6 +18611,10 @@ PrefabInstance:
       propertyPath: centerTransform
       value: 
       objectReference: {fileID: 3874431939824197178}
+    - target: {fileID: 5002293010936276628, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
+      propertyPath: multi_PlayerManager
+      value: 
+      objectReference: {fileID: 1385086575639748066}
     - target: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
       propertyPath: m_Name
       value: Multi_Sphere (4)
@@ -18667,11 +18668,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2997311123623367468}
-    - targetCorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4747868062231575884}
+      insertIndex: 5
+      addedObject: {fileID: 3220391179664023283}
   m_SourcePrefab: {fileID: 100100000, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
 --- !u!4 &6210306029418187506 stripped
 Transform:
@@ -18683,23 +18681,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
   m_PrefabInstance: {fileID: 4553558545774113646}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2997311123623367468
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7070594396379062878}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
---- !u!114 &4747868062231575884
+--- !u!114 &3220391179664023283
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -18717,8 +18699,7 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents:
-  - {fileID: 2997311123623367468}
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -18800,45 +18781,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3874431939824197178}
     m_Modifications:
-    - target: {fileID: 1683217398322327046, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      propertyPath: m_ExcludeLayers.m_Bits
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2759807872955471466, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 2760375235982719316, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 2760516266477672962, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 2760670485241087938, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 5002293010936276628, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
       propertyPath: self
       value: 
       objectReference: {fileID: 7767783190507517022}
     - target: {fileID: 5002293010936276628, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      propertyPath: initialAngle
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5002293010936276628, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
       propertyPath: centerTransform
       value: 
       objectReference: {fileID: 3874431939824197178}
+    - target: {fileID: 5002293010936276628, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
+      propertyPath: multi_PlayerManager
+      value: 
+      objectReference: {fileID: 1385086575639748066}
     - target: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
       propertyPath: m_Name
       value: Multi_Sphere
-      objectReference: {fileID: 0}
-    - target: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      propertyPath: m_Layer
-      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7574506128415881628, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18885,11 +18842,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7193808036918614215}
-    - targetCorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 751362532924933711}
+      insertIndex: 5
+      addedObject: {fileID: 6167524240388206520}
   m_SourcePrefab: {fileID: 100100000, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
 --- !u!4 &179690275878889358 stripped
 Transform:
@@ -18901,7 +18855,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6714499238237425968, guid: e730955852bbdde439e3fdb10c3d586f, type: 3}
   m_PrefabInstance: {fileID: 7737305568521821714}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7193808036918614215
+--- !u!114 &6167524240388206520
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -18919,27 +18873,10 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents:
-  - {fileID: 751362532924933711}
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &751362532924933711
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3913310389695205154}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
 --- !u!1001 &8653486074693110374
 PrefabInstance:
   m_ObjectHideFlags: 0

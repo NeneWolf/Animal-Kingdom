@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,6 +38,7 @@ public class Multi_AnimatorManager : MonoBehaviour
         else { animator.SetFloat(vertical, verticalMovement, 0.1f, Time.deltaTime); animator.speed = 1f; }
     }
 
+    [PunRPC]
     public void PlayTargetAnimation(string targetAnimation, bool isInteracting)
     {
         animator.SetBool("isInteracting", isInteracting);

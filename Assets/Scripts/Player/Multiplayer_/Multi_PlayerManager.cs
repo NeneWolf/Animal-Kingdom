@@ -12,7 +12,6 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     Multi_PlayerLocomotion playerLocomotion;
     public GameObject cameraObject;
     Multi_CameraManager cameraManager;
-    Multi_PlayerWeapon playerWeapon;
 
     [SerializeField]Slider healthSlider;
 
@@ -35,24 +34,41 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     public bool canSprint = true;
     [SerializeField] Image staminaRefillImage;
 
+
+    RigidbodyConstraints originalConstraints;
+
     PhotonView photonView;
     Rigidbody rb;
     PlayerSpawnManager playerPointsSpawnManager;
 
+    MultiplayerLevelManager multiplayerLevelManager;
+    RespawnCanvas respawnCanvas;
+    EndingCanvas endingCanvas;
+    [SerializeField] float respawnTime = 10f;
+
     private void Awake()
     {
-        inputManager = GetComponent<Multi_InputManager>();
-        playerLocomotion = GetComponent<Multi_PlayerLocomotion>();
         photonView = GetComponent<PhotonView>();
         capsuleCollider = GetComponent<CapsuleCollider>();
         rb = GetComponent<Rigidbody>();
+        originalConstraints = rb.constraints;
+
+        inputManager = GetComponent<Multi_InputManager>();
+        playerLocomotion = GetComponent<Multi_PlayerLocomotion>();
         playerPointsSpawnManager = GameObject.FindAnyObjectByType<PlayerSpawnManager>().GetComponent<PlayerSpawnManager>();
-        playerWeapon = GetComponent<Multi_PlayerWeapon>();
+
         healthRefillImage = GameObject.FindGameObjectWithTag("HealthUIFill").GetComponent<Image>();
         staminaRefillImage = GameObject.FindGameObjectWithTag("StaminaUIFill").GetComponent<Image>();
+        multiplayerLevelManager = GameObject.FindAnyObjectByType<MultiplayerLevelManager>().GetComponent<MultiplayerLevelManager>();
+        animator = GetComponent<Animator>();
+
+        currentHealth = health;
+        currentStamina = stamina;
 
         if (photonView.IsMine)
         {
+            respawnCanvas = GameObject.FindAnyObjectByType<RespawnCanvas>();
+
             cameraObject = GameObject.FindAnyObjectByType<Multi_CameraManager>().gameObject;
             if (cameraObject != null)
             {
@@ -61,10 +77,8 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
                 cameraManager.WakeCamera(this.gameObject);
             }
 
-            animator = GetComponent<Animator>();
-
-            currentHealth = health;
-            currentStamina = stamina;
+            endingCanvas = GameObject.FindAnyObjectByType<EndingCanvas>().GetComponent<EndingCanvas>();
+            endingCanvas.SendInformationToEndingCanvas(this.gameObject);
         }
         else return;
     }
@@ -93,21 +107,15 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
                 healthSlider.value = currentHealth;
                 staminaRefillImage.fillAmount = currentStamina / stamina;
                 healthRefillImage.fillAmount = currentHealth / health;
-
-                if (Input.GetKeyDown(KeyCode.P))
-                {
-                    // add canvas options here
-                }
-
             }
-            else
+
+            if (isDead && multiplayerLevelManager.isGameOver == false)
             {
                 if (!hasStartedRespawn)
                 {
                     PlayerRespawn();
                 }
             }
-
         }
         else{ return; }
 
@@ -117,11 +125,11 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     {
         if (photonView.IsMine)
         {
-            if (!isDead)
-            {
-                playerLocomotion.HandleAllMovement();
+            //if (!isDead)
+            //{
+            //    playerLocomotion.HandleAllMovement();
                 
-            }
+            //}
 
             cameraManager.HandleAllCameraMovement();
         }
@@ -140,7 +148,6 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
             }
         }
         else return;
-
     }
 
     public void TakeDamage(Multi_OrbMovement bullet)
@@ -164,10 +171,13 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     void PlayerDied()
     {
         isDead = true;
-        animator.SetBool("isDead", true);
+
+        animator.SetBool("isDead", isDead);
+
         capsuleCollider.enabled = false;
+        rb.constraints = RigidbodyConstraints.FreezePositionY;
         rb.useGravity = false;
-        playerWeapon.enabled = false;
+
     }
 
     void PlayerRespawn()
@@ -195,17 +205,29 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     {
         hasStartedRespawn = true;
         var ran = UnityEngine.Random.Range(0, playerPointsSpawnManager.playerSpawnPoint.Length);
-        transform.position = playerPointsSpawnManager.playerSpawnPoint[ran].transform.position;
-        animator.SetBool("isDead", false);
 
-        yield return new WaitForSeconds(5f);
-        playerWeapon.enabled = true;
-        capsuleCollider.enabled = true;
-        rb.useGravity = true;
+        yield return new WaitForSeconds(1f);
+
+        transform.position = playerPointsSpawnManager.playerSpawnPoint[ran].transform.position;
+
+        animator.SetBool("isDead", false);
+        animator.SetBool("isRespawning", true);
+
+        respawnCanvas.DisplayCountDown(respawnTime, true);
+
+        yield return new WaitForSeconds(respawnTime);
+
+        animator.SetBool("isRespawning", false);
+
         isDead = false;
+        capsuleCollider.enabled = true;
+        rb.constraints = originalConstraints;
+        rb.useGravity = true;
+
         currentHealth = health;
         currentStamina = stamina;
-        playerWeapon.enabled = true;
+        hasStartedRespawn = false;
+
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -213,20 +235,33 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(currentHealth);
-
             stream.SendNext(isDead);
             stream.SendNext(rb.useGravity);
             stream.SendNext(capsuleCollider.enabled);
+            stream.SendNext(hasStartedRespawn);
+
+            stream.SendNext(currentStamina);
+            stream.SendNext(rb.constraints);
+            stream.SendNext(isInteracting);
+
         }
         else
         {
             currentHealth = (float)stream.ReceiveNext();
+
             healthSlider.value = currentHealth;
             healthRefillImage.fillAmount = currentHealth / health;
 
             isDead = (bool)stream.ReceiveNext();
             rb.useGravity = (bool)stream.ReceiveNext();
             capsuleCollider.enabled = (bool)stream.ReceiveNext();
+
+            hasStartedRespawn = (bool)stream.ReceiveNext();
+
+            currentStamina = (float)stream.ReceiveNext();
+            rb.constraints = (RigidbodyConstraints)stream.ReceiveNext();
+
+            isInteracting = (bool)stream.ReceiveNext();
         }
     }
 }

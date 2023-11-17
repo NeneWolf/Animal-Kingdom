@@ -27,13 +27,11 @@ public class Multi_OrbBehaviour : MonoBehaviour, IPunObservable
     [SerializeField] private GameObject powerUpVFX;
 
     PhotonView photonView;
-    public Photon.Realtime.Player Owner { get; private set; }
 
     private void Awake()
     {
-        photonView = GetComponent<PhotonView>();
+        photonView = self.GetComponent<PhotonView>();
         multi_PlayerManager = self.GetComponent<Multi_PlayerManager>();
-        Owner = self.GetComponent<PhotonView>().Owner;
     }
 
     private void Start()
@@ -90,13 +88,11 @@ public class Multi_OrbBehaviour : MonoBehaviour, IPunObservable
         transform.position = centerTransform.position + offset;
     }
 
-
-
     [PunRPC]
-    public void FireBullet(GameObject target, Quaternion quaternion)
+    public void FireBullet(Quaternion quaternion)
     {
         GameObject proj = Instantiate(projectile,transform.position, quaternion);
-        proj.GetComponent<Multi_OrbMovement>().SpawnBullet(target, centerTransform, self, photonView.Owner);
+        proj.GetComponent<Multi_OrbMovement>().SpawnBullet(centerTransform, self, photonView.Owner);
     }
 
 
@@ -104,12 +100,11 @@ public class Multi_OrbBehaviour : MonoBehaviour, IPunObservable
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(this.gameObject.activeInHierarchy);
+            stream.SendNext(powerUpVFX.activeInHierarchy);
         }
         else
         {
-            var active = (bool)stream.ReceiveNext();
-            gameObject.SetActive(active);
+            powerUpVFX.SetActive((bool)stream.ReceiveNext());
         }
     }
 }

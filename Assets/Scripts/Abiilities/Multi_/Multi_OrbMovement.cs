@@ -33,9 +33,9 @@ public class Multi_OrbMovement : MonoBehaviour
 
     }
 
-    public void SpawnBullet(GameObject target, Transform center, GameObject playerSelf, Photon.Realtime.Player owner)
+    public void SpawnBullet(Transform center, GameObject playerSelf, Photon.Realtime.Player owner)
     {
-        this.target = target;
+        this.target = playerSelf.GetComponent<Multi_PlayerWeapon>().currentTarget;
         this.centerTransform = center;
         this.playerThatSpawnProjectile = playerSelf;
         this.Owner = owner;
@@ -51,7 +51,7 @@ public class Multi_OrbMovement : MonoBehaviour
 
         // Calculate the new position with a downward movement on the Y-axis
         Vector3 newPosition = transform.position + transform.forward * fireSpeed * Time.deltaTime;
-        newPosition.y -= 0.03f; // Adjust this value to control the speed of downward movement
+        newPosition.y -= 0.015f; // Adjust this value to control the speed of downward movement
 
         // Move towards the new position
         transform.position = Vector3.MoveTowards(transform.position, newPosition, fireSpeed * Time.deltaTime);
@@ -67,7 +67,6 @@ public class Multi_OrbMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        UnityEngine.Debug.Log("Collision");
         if (collision.gameObject.layer == 7)
         {
             ExplosionVFX();
@@ -75,8 +74,6 @@ public class Multi_OrbMovement : MonoBehaviour
         }
         else if (collision.gameObject.tag.Equals("Player") && collision.gameObject != playerThatSpawnProjectile)
         {
-            UnityEngine.Debug.Log("Hit player");
-            
             collision.gameObject.GetComponent<Multi_PlayerManager>().TakeDamage(this);
             ExplosionVFX();
             Destroy(gameObject);

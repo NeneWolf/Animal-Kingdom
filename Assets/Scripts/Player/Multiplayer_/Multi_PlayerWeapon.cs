@@ -23,7 +23,7 @@ public class Multi_PlayerWeapon : MonoBehaviour, IPunObservable
     [Header("Target Check")]
     [SerializeField] private Transform TargetCheck;
     GameObject target;
-    GameObject currentTarget;
+    public GameObject currentTarget;
     bool findTarget;
 
     [Header("Reloading")]
@@ -33,20 +33,24 @@ public class Multi_PlayerWeapon : MonoBehaviour, IPunObservable
 
     GameObject self;
 
+    PhotonView photonView;  
+
     private void Awake()
     {
         playerManager = GetComponent<Multi_PlayerManager>();
         animatorManager = GetComponent<Multi_AnimatorManager>();
         playerLocomotion = GetComponent<Multi_PlayerLocomotion>();
+        photonView = GetComponent<PhotonView>();
+
         self = this.gameObject;
     }
 
     void Start()
     {
-        if(WeaponOrbStorage.activeInHierarchy == false)
+        if (WeaponOrbStorage.activeInHierarchy == false)
             WeaponOrbStorage.SetActive(true);
 
-        foreach(Transform child in WeaponOrbStorage.transform)
+        foreach (Transform child in WeaponOrbStorage.transform)
         {
             weapon.Add(child.gameObject);
         }
@@ -56,55 +60,61 @@ public class Multi_PlayerWeapon : MonoBehaviour, IPunObservable
 
     private void Update()
     {
-        if (!playerManager.ReportDead())
+        if (photonView.IsMine)
         {
-            if (currentWeapons == 0 && !isReloading)
+            if (!playerManager.ReportDead())
             {
-                reloadFullChargeSkin.gameObject.SetActive(false);
-                StartCoroutine(WeaponReload());
-            }
+                WeaponOrbStorage.SetActive(true);
 
-            // Deals with turning off or on the "full reloaded skin"
-            if (!playerLocomotion.isInvisible && !isReloading)
+                if (currentWeapons == 0 && !isReloading)
+                {
+                    reloadFullChargeSkin.gameObject.SetActive(false);
+                    StartCoroutine(WeaponReload());
+                }
+
+                // Deals with turning off or on the "full reloaded skin"
+                if (!playerLocomotion.isInvisible && !isReloading)
+                {
+                    reloadFullChargeSkin.gameObject.SetActive(true);
+                }
+
+                if (playerLocomotion.isInvisible)
+                    reloadFullChargeSkin.gameObject.SetActive(false);
+            }
+            else
             {
-                reloadFullChargeSkin.gameObject.SetActive(true);
+                WeaponOrbStorage.SetActive(false);
             }
-
-            if (playerLocomotion.isInvisible)
-                reloadFullChargeSkin.gameObject.SetActive(false);
-        }
-        else
-        {
-            WeaponOrbStorage.SetActive(false);
         }
     }
 
 
     public void Shoot(bool autoTarget)
     {
-        if (isReloading == false && currentWeapons > 0)
+        if (photonView.IsMine)
         {
-            findTarget = autoTarget;
-
-            if (autoTarget)
+            if (isReloading == false && currentWeapons > 0)
             {
-                FindAutoTarget();
+                findTarget = autoTarget;
+
+                if (autoTarget)
+                {
+                    FindAutoTarget();
+                }
+                else
+                    currentTarget = null;
+
+                photonView.RPC("PlayTargetAnimation", RpcTarget.AllViaServer, "PrimaryAttack", false);
+                //animatorManager.PlayTargetAnimation("PrimaryAttack", false);
+                weapon[currentWeapons - 1].GetComponent<MeshRenderer>().enabled = false;
+                weapon[currentWeapons - 1].GetComponent<SphereCollider>().enabled = false;
+
+                weapon[currentWeapons - 1].GetPhotonView().RPC("FireBullet",
+                    RpcTarget.All,
+                    self.GetComponent<Multi_PlayerManager>().cameraObject.transform.rotation);
+
+                currentWeapons--;
             }
-            else
-                currentTarget = null;
-
-
-            animatorManager.PlayTargetAnimation("PrimaryAttack", false);
-            weapon[currentWeapons-1].GetComponent<MeshRenderer>().enabled = false;
-            weapon[currentWeapons-1].GetComponent<SphereCollider>().enabled = false;
-
-            weapon[currentWeapons - 1].GetPhotonView().RPC("FireBullet", 
-                RpcTarget.All,
-                currentTarget, 
-                self.GetComponent<Multi_PlayerManager>().cameraObject.transform.rotation);
-           //weapon[currentWeapons-1].GetComponent<Multi_OrbBehaviour>().FireBullet(currentTarget);
-
-            currentWeapons--;
         }
 
     }
@@ -124,6 +134,8 @@ public class Multi_PlayerWeapon : MonoBehaviour, IPunObservable
         {
             if (hit.transform.gameObject.tag == "Player" && hit.transform.gameObject != self.gameObject)
             {
+                Debug.Log("target:" + hit.transform.gameObject.name);
+
                 target = hit.transform.gameObject;
 
                 //Compare it with the previous distance
@@ -174,11 +186,35 @@ public class Multi_PlayerWeapon : MonoBehaviour, IPunObservable
         {
             stream.SendNext(reloadFullChargeSkin.activeInHierarchy);
 
+            stream.SendNext(isReloading);
+            stream.SendNext(currentWeapons);
+
+
+            //stream.SendNext(weapon);
+
+            //foreach (GameObject orb in weapon)
+            //{
+            //    stream.SendNext(orb.GetComponent<MeshRenderer>().enabled);
+            //    stream.SendNext(orb.GetComponent<SphereCollider>().enabled);
+            //}
+
+            //stream.SendNext(WeaponOrbStorage.activeInHierarchy);
         }
         else
         {
-            var active = (bool)stream.ReceiveNext();
-            reloadFullChargeSkin.SetActive(active);
+            reloadFullChargeSkin.SetActive((bool)stream.ReceiveNext());
+
+            isReloading = (bool)stream.ReceiveNext();
+            currentWeapons = (int)stream.ReceiveNext();
+
+            //weapon = (List<GameObject>)stream.ReceiveNext();
+            //foreach (GameObject orb in weapon)
+            //{
+            //    orb.GetComponent<MeshRenderer>().enabled = (bool)stream.ReceiveNext();
+            //    orb.GetComponent<SphereCollider>().enabled = (bool)stream.ReceiveNext();
+            //}
+
+            //WeaponOrbStorage.SetActive((bool)stream.ReceiveNext());
         }
     }
 }

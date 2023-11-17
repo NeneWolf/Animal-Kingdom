@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Multi_InputManager : MonoBehaviour
+public class Multi_InputManager : MonoBehaviour, IPunObservable
 {
     PlayerInputAction playerControls;
     Multi_PlayerLocomotion playerLocomotion;
     Multi_PlayerManager playerManager;
     Multi_AnimatorManager animatorManager;
+
     public Vector2 moveInput;
     public float moveAmount;
 
@@ -72,16 +73,24 @@ public class Multi_InputManager : MonoBehaviour
     //Handle All the inputs and calls the functions
     public void HandleAllInputs()
     {
-        if (!playerManager.ReportDead() && photonView.IsMine)
+        if (photonView.IsMine)
         {
-            HandleMovementInput();
+            if (!playerManager.ReportDead())
+            {
+                HandleMovementInput();
+                HandleSprintingInput();
+                HandleJumpInput();
+            }
+
             HandleCameraInput();
-            HandleSprintingInput();
-            HandleJumpInput();
         }
 
-        PrimaryAttack();
-        SecondaryAttack();
+        if (!playerManager.ReportDead())
+        {
+            PrimaryAttack();
+            SecondaryAttack();
+        }
+
     }
 
     private void HandleMovementInput()
@@ -102,11 +111,11 @@ public class Multi_InputManager : MonoBehaviour
 
     private void HandleSprintingInput()
     {
-        if(playerManager.canSprint)
+        if (playerManager.canSprint)
         {
             if (sprintInput && verticalInput > 0.5f)
             {
-                playerLocomotion.isSprinting = true; 
+                playerLocomotion.isSprinting = true;
                 playerManager.TakeStamina(0.05f);
             }
             else playerLocomotion.isSprinting = false;
@@ -125,7 +134,7 @@ public class Multi_InputManager : MonoBehaviour
 
     private void PrimaryAttack()
     {
-        if(isPrimaryAttack && !isSecondaryAttack)
+        if (isPrimaryAttack && !isSecondaryAttack)
         {
             isPrimaryAttack = false;
             playerLocomotion.PrimaryAttack();
@@ -138,6 +147,30 @@ public class Multi_InputManager : MonoBehaviour
         {
             isSecondaryAttack = false;
             playerLocomotion.SecondaryAttack();
+        }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(sprintInput);
+            stream.SendNext(jumpInput);
+            stream.SendNext(isMoving);
+
+            stream.SendNext(isPrimaryAttack);
+            stream.SendNext(isSecondaryAttack);
+
+        }
+        else
+        {
+            sprintInput = (bool)stream.ReceiveNext();
+            jumpInput = (bool)stream.ReceiveNext();
+            isMoving = (bool)stream.ReceiveNext();
+
+            isPrimaryAttack = (bool)stream.ReceiveNext();
+            isSecondaryAttack = (bool)stream.ReceiveNext();
+
         }
     }
 }

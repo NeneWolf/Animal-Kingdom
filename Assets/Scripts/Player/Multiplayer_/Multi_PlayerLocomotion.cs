@@ -62,7 +62,9 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
     [Header("CanvasForOtherPlayers")]
     public GameObject canvas;
 
+    [Header("PhotonViewData")]
     int currentMaterial;
+    [SerializeField] GameObject playerMagicPA;
 
     PhotonView photonView;
 
@@ -187,7 +189,10 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
         if (!isGrounded && !isJumping)
         {
             if (!playerManager.isInteracting)
-                animatorManager.PlayTargetAnimation("Wolf_Fall", true);
+            {
+                photonView.RPC("PlayTargetAnimation", RpcTarget.AllViaServer, "Wolf_Fall", true);
+            }
+                //animatorManager.PlayTargetAnimation("Wolf_Fall", true);
 
             inAirTimer = inAirTimer + Time.deltaTime;
             playerRigidbody.AddForce(transform.forward * leapingVelocity);
@@ -198,8 +203,10 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
         {
             if (!isGrounded && playerManager.isInteracting)
             {
-                animatorManager.PlayTargetAnimation("Wolf_Land", true);
+                photonView.RPC("PlayTargetAnimation", RpcTarget.AllViaServer, "Wolf_Land", true);
+                //animatorManager.PlayTargetAnimation("Wolf_Land", true);
             }
+
             inAirTimer = 0;
             isGrounded = true;
             playerManager.isInteracting = false;
@@ -214,13 +221,17 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
     {
         if (isGrounded && !isSprinting)
         {
+            isJumping = true;
             animatorManager.animator.SetBool("isJumping", true);
-            animatorManager.PlayTargetAnimation("Wolf_Jump_Forward", false);
+            photonView.RPC("PlayTargetAnimation", RpcTarget.AllViaServer, "Wolf_Jump_Forward", false);
+            //animatorManager.PlayTargetAnimation("Wolf_Jump_Forward", false);
         }
         else if (isGrounded && isSprinting)
         {
+            isJumping = true;
             animatorManager.animator.SetBool("isJumping", true);
-            animatorManager.PlayTargetAnimation("Wolf_Sprint_Jump", false);
+            photonView.RPC("PlayTargetAnimation", RpcTarget.AllViaServer, "Wolf_Sprint_Jump", false);
+            //animatorManager.PlayTargetAnimation("Wolf_Sprint_Jump", false);
         }
     }
 
@@ -347,12 +358,17 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
             stream.SendNext(timerVisibleFadeOut);
             stream.SendNext(timerInvisibleFadeIn);
 
-            stream.SendNext(playerDisableElements[0].activeInHierarchy);
+            stream.SendNext(playerMagicPA.activeInHierarchy);
             stream.SendNext(fadeOutTime);
             stream.SendNext(fadeInTime);
 
             stream.SendNext(autoTarget);
             stream.SendNext(powerUpEffect.activeInHierarchy);
+            stream.SendNext(isGrounded);
+            stream.SendNext(isJumping);
+            stream.SendNext(timer);
+
+            
 
         }
         else
@@ -365,12 +381,15 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
             timerVisibleFadeOut = (float)stream.ReceiveNext();
             timerInvisibleFadeIn = (float)stream.ReceiveNext();
 
-            playerDisableElements[0].SetActive((bool)stream.ReceiveNext());
+            playerMagicPA.SetActive((bool)stream.ReceiveNext());
             fadeOutTime = (float)stream.ReceiveNext();
             fadeInTime = (float)stream.ReceiveNext();
 
             autoTarget = (bool)stream.ReceiveNext();
             powerUpEffect.SetActive((bool)stream.ReceiveNext());
+            isGrounded = (bool)stream.ReceiveNext();
+            isJumping = (bool)stream.ReceiveNext();
+            timer = (float)stream.ReceiveNext();
 
         }
     }
