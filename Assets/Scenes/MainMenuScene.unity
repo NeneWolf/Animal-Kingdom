@@ -8140,6 +8140,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: MultiplayerLobby, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 6812360275880991983, guid: 63eeed59a09b7964188723bc31f849ad, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6812360275905130702, guid: 63eeed59a09b7964188723bc31f849ad, type: 3}
       propertyPath: m_IsActive
       value: 0

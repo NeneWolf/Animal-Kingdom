@@ -9,7 +9,7 @@ public class Multi_OrbBehaviour : MonoBehaviour, IPunObservable
 {
     public Transform centerTransform;
     [SerializeField] GameObject projectile;
-    [SerializeField] GameObject self;
+    [SerializeField] GameObject self; // player
     [SerializeField] Multi_PlayerManager multi_PlayerManager;
 
     //public Transform parentTransform;
@@ -27,12 +27,13 @@ public class Multi_OrbBehaviour : MonoBehaviour, IPunObservable
     [SerializeField] private GameObject powerUpVFX;
 
     PhotonView photonView;
-
+    public Photon.Realtime.Player Owner { get; private set; }
 
     private void Awake()
     {
         photonView = GetComponent<PhotonView>();
         multi_PlayerManager = self.GetComponent<Multi_PlayerManager>();
+        Owner = self.GetComponent<PhotonView>().Owner;
     }
 
     private void Start()
@@ -89,6 +90,8 @@ public class Multi_OrbBehaviour : MonoBehaviour, IPunObservable
         transform.position = centerTransform.position + offset;
     }
 
+
+
     [PunRPC]
     public void FireBullet(GameObject target, Quaternion quaternion)
     {
@@ -96,15 +99,17 @@ public class Multi_OrbBehaviour : MonoBehaviour, IPunObservable
         proj.GetComponent<Multi_OrbMovement>().SpawnBullet(target, centerTransform, self, photonView.Owner);
     }
 
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(gameObject.activeInHierarchy);
+            stream.SendNext(this.gameObject.activeInHierarchy);
         }
         else
         {
-            gameObject.SetActive((bool)stream.ReceiveNext());
+            var active = (bool)stream.ReceiveNext();
+            gameObject.SetActive(active);
         }
     }
 }

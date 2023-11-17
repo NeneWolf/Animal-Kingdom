@@ -7,13 +7,15 @@ using UnityEngine;
 public class Multi_OrbMovement : MonoBehaviour
 {
     public float fireSpeed = 10f;
-    [SerializeField] float damage = 10f;
+    public float damage = 10f;
     GameObject playerThatSpawnProjectile;
     GameObject target;
     Transform centerTransform;
     bool hasCenterTransform;
 
     [SerializeField] private GameObject explosionVFX;
+
+    [HideInInspector]
     public Photon.Realtime.Player Owner { get; private set; }
 
     private void Awake()
@@ -49,7 +51,7 @@ public class Multi_OrbMovement : MonoBehaviour
 
         // Calculate the new position with a downward movement on the Y-axis
         Vector3 newPosition = transform.position + transform.forward * fireSpeed * Time.deltaTime;
-        newPosition.y -= 0.003f; // Adjust this value to control the speed of downward movement
+        newPosition.y -= 0.03f; // Adjust this value to control the speed of downward movement
 
         // Move towards the new position
         transform.position = Vector3.MoveTowards(transform.position, newPosition, fireSpeed * Time.deltaTime);
@@ -74,7 +76,8 @@ public class Multi_OrbMovement : MonoBehaviour
         else if (collision.gameObject.tag.Equals("Player") && collision.gameObject != playerThatSpawnProjectile)
         {
             UnityEngine.Debug.Log("Hit player");
-            collision.gameObject.GetComponent<Multi_PlayerManager>().TakeDamage(damage);
+            
+            collision.gameObject.GetComponent<Multi_PlayerManager>().TakeDamage(this);
             ExplosionVFX();
             Destroy(gameObject);
         }

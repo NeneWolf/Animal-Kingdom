@@ -90,6 +90,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     public void CreateARoom()
     {
         RoomOptions roomOptions = new RoomOptions();
+        
         roomOptions.MaxPlayers = 4;
         roomOptions.IsVisible = true;
 
@@ -264,9 +265,18 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
 
     public void StartGameClicked()
     {
-        PhotonNetwork.CurrentRoom.IsOpen = false;
-        PhotonNetwork.CurrentRoom.IsVisible = false;
+        if (PhotonNetwork.CurrentRoom.PlayerCount >= 2 && PhotonNetwork.CurrentRoom.PlayerCount <= 4)
+        {
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            PhotonNetwork.CurrentRoom.IsVisible = false;
+            PhotonNetwork.LoadLevel("GameScene_Multiplayer");
+        }
 
-        PhotonNetwork.LoadLevel("GameScene_Multiplayer");
     }
+
+    //public void OnPlayerDisconnected(PhotonNetwork player)
+    //{
+    //    Debug.Log("Clean up after player " + player);
+    //    PhotonNetwork.DestroyPlayerObjects(player);
+    //}
 }

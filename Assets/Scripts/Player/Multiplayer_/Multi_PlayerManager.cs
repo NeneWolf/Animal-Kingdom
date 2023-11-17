@@ -1,7 +1,7 @@
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
+using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +12,7 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     Multi_PlayerLocomotion playerLocomotion;
     public GameObject cameraObject;
     Multi_CameraManager cameraManager;
+    Multi_PlayerWeapon playerWeapon;
 
     [SerializeField]Slider healthSlider;
 
@@ -25,6 +26,8 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     [SerializeField] Image healthRefillImage;
     CapsuleCollider capsuleCollider;
 
+    bool hasStartedRespawn;
+
     [Header("Stamina Information")]
     float stamina = 100f;
     public float currentStamina;
@@ -33,6 +36,8 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     [SerializeField] Image staminaRefillImage;
 
     PhotonView photonView;
+    Rigidbody rb;
+    PlayerSpawnManager playerPointsSpawnManager;
 
     private void Awake()
     {
@@ -40,7 +45,9 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
         playerLocomotion = GetComponent<Multi_PlayerLocomotion>();
         photonView = GetComponent<PhotonView>();
         capsuleCollider = GetComponent<CapsuleCollider>();
-
+        rb = GetComponent<Rigidbody>();
+        playerPointsSpawnManager = GameObject.FindAnyObjectByType<PlayerSpawnManager>().GetComponent<PlayerSpawnManager>();
+        playerWeapon = GetComponent<Multi_PlayerWeapon>();
         healthRefillImage = GameObject.FindGameObjectWithTag("HealthUIFill").GetComponent<Image>();
         staminaRefillImage = GameObject.FindGameObjectWithTag("StaminaUIFill").GetComponent<Image>();
 
@@ -66,35 +73,41 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     {
         if(photonView.IsMine)
         {
-            inputManager.HandleAllInputs();
-
-            if (currentHealth <= 0)
+            if (!isDead)
             {
-                isDead = true;
-                animator.SetBool("isDead", true);
-                capsuleCollider.enabled = false;
-            }
-            else if(currentHealth > 0)
-            {
-                capsuleCollider.enabled = true;
-            }
+                inputManager.HandleAllInputs();
 
-            if (currentStamina < stamina && !playerLocomotion.isSprinting)
-            {
-                // Recover stamina
-                currentStamina += stamina / timeToRecoverStamina * Time.deltaTime;
-
-                if (currentStamina >= stamina)
+                if (currentStamina < stamina && !playerLocomotion.isSprinting)
                 {
-                    currentStamina = stamina;
-                    canSprint = true;
+                    // Recover stamina
+                    currentStamina += stamina / timeToRecoverStamina * Time.deltaTime;
+
+                    if (currentStamina >= stamina)
+                    {
+                        currentStamina = stamina;
+                        canSprint = true;
+                    }
+                }
+
+                // Update UI
+                healthSlider.value = currentHealth;
+                staminaRefillImage.fillAmount = currentStamina / stamina;
+                healthRefillImage.fillAmount = currentHealth / health;
+
+                if (Input.GetKeyDown(KeyCode.P))
+                {
+                    // add canvas options here
+                }
+
+            }
+            else
+            {
+                if (!hasStartedRespawn)
+                {
+                    PlayerRespawn();
                 }
             }
 
-            // Update UI
-            healthSlider.value = currentHealth;
-            staminaRefillImage.fillAmount = currentStamina / stamina;
-            healthRefillImage.fillAmount = currentHealth / health;
         }
         else{ return; }
 
@@ -104,7 +117,12 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     {
         if (photonView.IsMine)
         {
-            playerLocomotion.HandleAllMovement();
+            if (!isDead)
+            {
+                playerLocomotion.HandleAllMovement();
+                
+            }
+
             cameraManager.HandleAllCameraMovement();
         }
         else return;
@@ -114,26 +132,49 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     {
         if (photonView.IsMine)
         {
-            isInteracting = animator.GetBool("isInteracting");
-            playerLocomotion.isJumping = animator.GetBool("isJumping");
-            animator.SetBool("isGrounded", playerLocomotion.isGrounded);
+            if (!isDead)
+            {
+                isInteracting = animator.GetBool("isInteracting");
+                playerLocomotion.isJumping = animator.GetBool("isJumping");
+                animator.SetBool("isGrounded", playerLocomotion.isGrounded);
+            }
         }
         else return;
 
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(Multi_OrbMovement bullet)
     {
+        Debug.Log("Player took damage +1");
+
         if(playerLocomotion.isInvisible)
             playerLocomotion.isGoingVisible = true;
 
-        currentHealth -= damage;
-
-        if(currentHealth <= 0)
+        if(currentHealth - bullet.damage > 0){             
+            currentHealth -= bullet.damage;
+        }
+        else if(currentHealth - bullet.damage <= 0)
         {
             currentHealth = 0;
+            PlayerDied();
+            bullet.Owner.AddScore(1);
         }
     }
+
+    void PlayerDied()
+    {
+        isDead = true;
+        animator.SetBool("isDead", true);
+        capsuleCollider.enabled = false;
+        rb.useGravity = false;
+        playerWeapon.enabled = false;
+    }
+
+    void PlayerRespawn()
+    {
+        StartCoroutine(Respawn());
+    }
+
 
     public void TakeStamina(float amount)
     {
@@ -150,17 +191,42 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
         return isDead;
     }
 
+    IEnumerator Respawn()
+    {
+        hasStartedRespawn = true;
+        var ran = UnityEngine.Random.Range(0, playerPointsSpawnManager.playerSpawnPoint.Length);
+        transform.position = playerPointsSpawnManager.playerSpawnPoint[ran].transform.position;
+        animator.SetBool("isDead", false);
+
+        yield return new WaitForSeconds(5f);
+        playerWeapon.enabled = true;
+        capsuleCollider.enabled = true;
+        rb.useGravity = true;
+        isDead = false;
+        currentHealth = health;
+        currentStamina = stamina;
+        playerWeapon.enabled = true;
+    }
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
             stream.SendNext(currentHealth);
+
             stream.SendNext(isDead);
+            stream.SendNext(rb.useGravity);
+            stream.SendNext(capsuleCollider.enabled);
         }
         else
         {
             currentHealth = (float)stream.ReceiveNext();
+            healthSlider.value = currentHealth;
+            healthRefillImage.fillAmount = currentHealth / health;
+
             isDead = (bool)stream.ReceiveNext();
+            rb.useGravity = (bool)stream.ReceiveNext();
+            capsuleCollider.enabled = (bool)stream.ReceiveNext();
         }
     }
 }

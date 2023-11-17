@@ -64,18 +64,18 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
 
     int currentMaterial;
 
-
     PhotonView photonView;
 
     private void Awake()
     {
-        inputManager = GetComponent<Multi_InputManager>();
-
         photonView = GetComponent<PhotonView>();
+        inputManager = GetComponent<Multi_InputManager>();
         playerRigidbody = GetComponent<Rigidbody>();
         playerManager = GetComponent<Multi_PlayerManager>();
         animatorManager = GetComponent<Multi_AnimatorManager>();
         playerWeapon = GetComponent<Multi_PlayerWeapon>();
+
+
         currentMaterial = 0;
     }
 
@@ -86,8 +86,11 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
     
     void Update()
     {
-        FadeInInvisible();
-        FadeOutInvisible();
+        if (!playerManager.ReportDead())
+        {
+            FadeInInvisible();
+            FadeOutInvisible();
+        }
 
         if (!photonView.IsMine)
         {
@@ -104,10 +107,14 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
     {
         if (photonView.IsMine)
         {
-            HandleFallingAndLanding();
+            if (!playerManager.ReportDead())
+            {
+                HandleFallingAndLanding();
 
-            if (playerManager.isInteracting)
-                return;
+                if (playerManager.isInteracting)
+                    return;
+            }
+
         }
         else return;
     }
@@ -219,26 +226,33 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
 
     public void PrimaryAttack()
     {
-        if(isInvisible == true)
+        if (!playerManager.ReportDead())
         {
-            isGoingVisible = true;
-            isInvisible = false;
+            if (isInvisible == true)
+            {
+                isGoingVisible = true;
+                isInvisible = false;
+            }
+
+            if ((isGrounded && Time.time > nextFire) && !isInvisible)
+            {
+                //photonView.RPC("Shoot", RpcTarget.All,autoTarget);
+                playerWeapon.Shoot(autoTarget);
+            }
         }
 
-        if ((isGrounded && Time.time > nextFire) && !isInvisible)
-        {
-            //photonView.RPC("Shoot", RpcTarget.All,autoTarget);
-            playerWeapon.Shoot(autoTarget);
-        }
     }
 
     //Go Invisible
     public void SecondaryAttack()
     {
-        if (isInvisible == false)
-            isGoingInvisible = true;
-    }
+        if (!playerManager.ReportDead())
+        {
+            if (isInvisible == false)
+                isGoingInvisible = true;
+        }
 
+    }
 
     void FadeInInvisible()
     {

@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Multi_PlayerWeapon : MonoBehaviour
+public class Multi_PlayerWeapon : MonoBehaviour, IPunObservable
 {
     Multi_PlayerLocomotion playerLocomotion;
     Multi_AnimatorManager animatorManager;
+    Multi_PlayerManager playerManager;
 
     [Header("Projectile information")]
     [SerializeField] private GameObject WeaponOrbStorage;
@@ -34,6 +35,7 @@ public class Multi_PlayerWeapon : MonoBehaviour
 
     private void Awake()
     {
+        playerManager = GetComponent<Multi_PlayerManager>();
         animatorManager = GetComponent<Multi_AnimatorManager>();
         playerLocomotion = GetComponent<Multi_PlayerLocomotion>();
         self = this.gameObject;
@@ -41,6 +43,9 @@ public class Multi_PlayerWeapon : MonoBehaviour
 
     void Start()
     {
+        if(WeaponOrbStorage.activeInHierarchy == false)
+            WeaponOrbStorage.SetActive(true);
+
         foreach(Transform child in WeaponOrbStorage.transform)
         {
             weapon.Add(child.gameObject);
@@ -51,20 +56,27 @@ public class Multi_PlayerWeapon : MonoBehaviour
 
     private void Update()
     {
-        if(currentWeapons == 0 && !isReloading)
+        if (!playerManager.ReportDead())
         {
-            reloadFullChargeSkin.gameObject.SetActive(false);
-            StartCoroutine(WeaponReload());
-        }
+            if (currentWeapons == 0 && !isReloading)
+            {
+                reloadFullChargeSkin.gameObject.SetActive(false);
+                StartCoroutine(WeaponReload());
+            }
 
-        // Deals with turning off or on the "full reloaded skin"
-        if (!playerLocomotion.isInvisible && !isReloading)
-        {
-            reloadFullChargeSkin.gameObject.SetActive(true);
+            // Deals with turning off or on the "full reloaded skin"
+            if (!playerLocomotion.isInvisible && !isReloading)
+            {
+                reloadFullChargeSkin.gameObject.SetActive(true);
+            }
+
+            if (playerLocomotion.isInvisible)
+                reloadFullChargeSkin.gameObject.SetActive(false);
         }
-        
-        if(playerLocomotion.isInvisible)
-            reloadFullChargeSkin.gameObject.SetActive(false);
+        else
+        {
+            WeaponOrbStorage.SetActive(false);
+        }
     }
 
 
@@ -154,5 +166,19 @@ public class Multi_PlayerWeapon : MonoBehaviour
 
         currentWeapons = weapon.Count;
         isReloading = false;
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(reloadFullChargeSkin.activeInHierarchy);
+
+        }
+        else
+        {
+            var active = (bool)stream.ReceiveNext();
+            reloadFullChargeSkin.SetActive(active);
+        }
     }
 }
