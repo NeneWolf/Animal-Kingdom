@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using TMPro;
 using UnityEngine;
 
@@ -10,9 +11,9 @@ public class RespawnCanvas : MonoBehaviour
     float timeToRespawn;
     bool hasStartedRespawnCount;
 
-    public void DisplayCountDown(float timeToRespawn, bool StartCountdown)
+    public void DisplayCountDown(float timeToRespawn, bool StartCountdown, bool isDisplayed)
     {
-        panel.SetActive(true);
+        panel.SetActive(isDisplayed);
 
         this.timeToRespawn = timeToRespawn+1f;
         hasStartedRespawnCount = StartCountdown;

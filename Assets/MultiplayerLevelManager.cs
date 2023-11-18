@@ -22,6 +22,9 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
     private List<Player> winners = new List<Player>();
 
+    [SerializeField] GameObject disconnectPanel;
+    [SerializeField] Text textDisconnected;
+
     private void Awake()
     {
         playerSpawnPoint = GameObject.FindAnyObjectByType<PlayerSpawnManager>().playerSpawnPoint;
@@ -71,4 +74,30 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
     {
         SceneManager.LoadScene(0);
     }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        disconnectPanel.SetActive(true);
+        textDisconnected.text = otherPlayer.NickName + " has left the room.";
+        StartCoroutine(DisconnectPanelTimer());
+
+        if(PhotonNetwork.CurrentRoom.PlayerCount < 2)
+        {
+            PhotonNetwork.LocalPlayer.SetScore(maxKills);
+        }
+    }
+
+    IEnumerator DisconnectPanelTimer()
+    {
+        yield return new WaitForSeconds(5f);
+        disconnectPanel.SetActive(false);
+    }
+
+    public void RestartGame()
+    {
+        gameOverPopup.SetActive(false);
+        PhotonNetwork.LoadLevel(2);
+        PhotonNetwork.AutomaticallySyncScene = true;
+    }
+
 }

@@ -10,6 +10,7 @@ public class EndingCanvas : MonoBehaviour
     [SerializeField] GameObject panel;
     [SerializeField] Text winnerText;
     [SerializeField] GameObject loserText;
+    [SerializeField] GameObject restartButton;
 
     private List<Player> winners = new List<Player>();
 
@@ -27,6 +28,16 @@ public class EndingCanvas : MonoBehaviour
 
         if(photonView.IsMine)
         {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                restartButton.SetActive(true);
+            }
+            else
+            {
+                restartButton.SetActive(false);
+            }
+
+
             if (winners.Contains(PhotonNetwork.LocalPlayer))
             {
                 UpdateWinnerText();

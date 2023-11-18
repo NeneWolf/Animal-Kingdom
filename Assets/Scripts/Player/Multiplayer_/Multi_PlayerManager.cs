@@ -50,7 +50,7 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     {
         if(transform.position.y < 0)
         {
-              transform.position = new Vector3(transform.position.x, 1f, transform.position.z);
+              transform.position = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
         }
 
         photonView = GetComponent<PhotonView>();
@@ -114,11 +114,16 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
                 healthRefillImage.fillAmount = currentHealth / health;
             }
 
-            if (isDead && multiplayerLevelManager.isGameOver == false)
+            if (isDead)
             {
-                if (!hasStartedRespawn)
+                if(multiplayerLevelManager.isGameOver == false && !hasStartedRespawn)
                 {
                     PlayerRespawn();
+                }
+                else if(multiplayerLevelManager.isGameOver == true)
+                {
+                    respawnCanvas.DisplayCountDown(respawnTime, false,false);
+                    StopCoroutine(Respawn());
                 }
             }
         }
@@ -218,7 +223,7 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
         animator.SetBool("isDead", false);
         animator.SetBool("isRespawning", true);
 
-        respawnCanvas.DisplayCountDown(respawnTime, true);
+        respawnCanvas.DisplayCountDown(respawnTime, true,true);
 
         yield return new WaitForSeconds(respawnTime);
 
