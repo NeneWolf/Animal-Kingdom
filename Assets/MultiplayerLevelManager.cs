@@ -29,8 +29,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(playerSpawnPoint[Random.Range(0, playerSpawnPoint.Length)].transform.position.x,
-            0.5f, playerSpawnPoint[Random.Range(0, playerSpawnPoint.Length)].transform.position.z), Quaternion.identity);
+        PhotonNetwork.Instantiate(playerPrefab.name,playerSpawnPoint[Random.Range(0, playerSpawnPoint.Length)].transform.position, Quaternion.identity);
     }
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)

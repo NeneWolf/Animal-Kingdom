@@ -221,14 +221,14 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
     {
         if (isGrounded && !isSprinting)
         {
-            isJumping = true;
+            //isJumping = true;
             animatorManager.animator.SetBool("isJumping", true);
             photonView.RPC("PlayTargetAnimation", RpcTarget.AllViaServer, "Wolf_Jump_Forward", false);
             //animatorManager.PlayTargetAnimation("Wolf_Jump_Forward", false);
         }
         else if (isGrounded && isSprinting)
         {
-            isJumping = true;
+            //isJumping = true;
             animatorManager.animator.SetBool("isJumping", true);
             photonView.RPC("PlayTargetAnimation", RpcTarget.AllViaServer, "Wolf_Sprint_Jump", false);
             //animatorManager.PlayTargetAnimation("Wolf_Sprint_Jump", false);

@@ -45,6 +45,7 @@ MonoBehaviour:
   - Shoot
   - BulletMovement
   - BulletMovementToTarget
+  - PlayTargetAnimation
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

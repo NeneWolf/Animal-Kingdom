@@ -48,6 +48,11 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
 
     private void Awake()
     {
+        if(transform.position.y < 0)
+        {
+              transform.position = new Vector3(transform.position.x, 1f, transform.position.z);
+        }
+
         photonView = GetComponent<PhotonView>();
         capsuleCollider = GetComponent<CapsuleCollider>();
         rb = GetComponent<Rigidbody>();
