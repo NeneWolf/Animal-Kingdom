@@ -2,7 +2,9 @@ using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using System;
 using System.Collections;
+using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Multi_PlayerManager : MonoBehaviour, IPunObservable
@@ -46,6 +48,8 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     EndingCanvas endingCanvas;
     [SerializeField] float respawnTime = 10f;
 
+    ScenesManager scenesManager;
+
     private void Awake()
     {
         if(transform.position.y < 0)
@@ -86,6 +90,7 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
             endingCanvas.SendInformationToEndingCanvas(this.gameObject);
         }
         else return;
+
     }
 
     private void Update()
@@ -154,6 +159,8 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
             {
                 isInteracting = animator.GetBool("isInteracting");
                 playerLocomotion.isJumping = animator.GetBool("isJumping");
+                
+                photonView.RPC("PlayTargetAnimation", RpcTarget.AllViaServer, "isGrounded", playerLocomotion.isGrounded);
                 animator.SetBool("isGrounded", playerLocomotion.isGrounded);
             }
         }
@@ -182,6 +189,7 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     {
         isDead = true;
 
+        photonView.RPC("PlayTargetAnimationOthers", RpcTarget.AllViaServer, "isDead", isDead);
         animator.SetBool("isDead", isDead);
 
         capsuleCollider.enabled = false;
@@ -194,7 +202,6 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     {
         StartCoroutine(Respawn());
     }
-
 
     public void TakeStamina(float amount)
     {
@@ -219,6 +226,10 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
         yield return new WaitForSeconds(1f);
 
         transform.position = playerPointsSpawnManager.playerSpawnPoint[ran].transform.position;
+        transform.rotation = new Quaternion(0f,0f,0f,0f);
+
+        photonView.RPC("PlayTargetAnimationOthers", RpcTarget.AllViaServer, "isDead", false);
+        photonView.RPC("PlayTargetAnimationOthers", RpcTarget.AllViaServer, "isRespawning", true);
 
         animator.SetBool("isDead", false);
         animator.SetBool("isRespawning", true);
@@ -227,6 +238,8 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
 
         yield return new WaitForSeconds(respawnTime);
 
+
+        photonView.RPC("PlayTargetAnimationOthers", RpcTarget.AllViaServer, "isRespawning", true);
         animator.SetBool("isRespawning", false);
 
         isDead = false;

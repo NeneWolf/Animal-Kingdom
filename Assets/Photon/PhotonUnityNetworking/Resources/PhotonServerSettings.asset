@@ -46,6 +46,10 @@ MonoBehaviour:
   - BulletMovement
   - BulletMovementToTarget
   - PlayTargetAnimation
+  - RestartGame
+  - PlayTargetAnimationG
+  - PlayTargetAnimationOthers
+  - UpdateAnimatorValues
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

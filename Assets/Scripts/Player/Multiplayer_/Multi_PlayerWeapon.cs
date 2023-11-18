@@ -110,7 +110,7 @@ public class Multi_PlayerWeapon : MonoBehaviour, IPunObservable
                 weapon[currentWeapons - 1].GetComponent<SphereCollider>().enabled = false;
 
                 weapon[currentWeapons - 1].GetPhotonView().RPC("FireBullet",
-                    RpcTarget.All,
+                    RpcTarget.AllViaServer,
                     self.GetComponent<Multi_PlayerManager>().cameraObject.transform.rotation);
 
                 currentWeapons--;

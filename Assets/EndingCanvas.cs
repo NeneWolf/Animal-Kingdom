@@ -14,8 +14,14 @@ public class EndingCanvas : MonoBehaviour
 
     private List<Player> winners = new List<Player>();
 
+    MultiplayerLevelManager multiplayerLevelManager;
     PhotonView photonView;
-    
+
+    private void Awake()
+    {
+        multiplayerLevelManager = GameObject.FindAnyObjectByType<MultiplayerLevelManager>().GetComponent<MultiplayerLevelManager>();
+    }
+
     public void SendInformationToEndingCanvas(GameObject player)
     {
         photonView = player.GetComponent<PhotonView>();
@@ -74,5 +80,11 @@ public class EndingCanvas : MonoBehaviour
         }
 
         winnerText.text = winnerMessage.TrimEnd(',', ' ');
+    }
+
+    public void RestartGame()
+    {
+        PhotonNetwork.AutomaticallySyncScene = true;
+        PhotonNetwork.LoadLevel("GameScene_Multiplayer");
     }
 }

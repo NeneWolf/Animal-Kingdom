@@ -13,8 +13,9 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
     public int maxKills = 3;
     public GameObject gameOverPopup;
 
-
+    public float TimerToEndMatch = 5f;
     public bool isGameOver;
+    public bool isRestarting;
 
     [SerializeField] GameObject playerPrefab;
     GameObject[] playerSpawnPoint;
@@ -92,12 +93,4 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(5f);
         disconnectPanel.SetActive(false);
     }
-
-    public void RestartGame()
-    {
-        gameOverPopup.SetActive(false);
-        PhotonNetwork.LoadLevel(2);
-        PhotonNetwork.AutomaticallySyncScene = true;
-    }
-
 }

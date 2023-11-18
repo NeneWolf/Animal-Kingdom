@@ -18,6 +18,7 @@ public class Multi_AnimatorManager : MonoBehaviour
         vertical = Animator.StringToHash("Vertical");
     }
 
+    [PunRPC]
     public void UpdateAnimatorValues(float horizontalMovement, float verticalMovement, bool isSprinting)
     {
         #region 
@@ -30,8 +31,6 @@ public class Multi_AnimatorManager : MonoBehaviour
         else if (horizontalMovement < -0.55f) { snappedHorizontal = -1f; }
         else { snappedHorizontal = 0f; }
         #endregion
-
-
         animator.SetFloat(horizontal, snappedHorizontal, 0.1f, Time.deltaTime);
 
         if (isSprinting) { animator.SetFloat(vertical, 2, 0.1f, Time.deltaTime); animator.speed = speed; }
@@ -43,5 +42,41 @@ public class Multi_AnimatorManager : MonoBehaviour
     {
         animator.SetBool("isInteracting", isInteracting);
         animator.CrossFade(targetAnimation, 0.2f);
+
+        if(targetAnimation == "Wolf_Jump_Forward")
+        {
+            StartCoroutine(ResetJump());
+        }
+        else if(targetAnimation == "Wolf_Sprint_Jump")
+        {
+            StartCoroutine(ResetJump2());
+        }
+    }
+
+    [PunRPC]
+    public void PlayTargetAnimationOthers(string targetAnimation, bool value)
+    {
+        animator.SetBool(targetAnimation, value);
+    }
+
+    IEnumerator ResetJump()
+    {
+        animator.SetLayerWeight(1, 1);
+        yield return new WaitForSeconds(1.5f);
+        animator.SetLayerWeight(1, 0);
+        PhotonView photonView = GetComponent<PhotonView>();
+        photonView.RPC("PlayTargetAnimationOthers", RpcTarget.Others, "Wolf_Jump_Forward", true);
+        animator.SetBool("isInteracting", false);
+    }
+
+    IEnumerator ResetJump2()
+    {
+        animator.SetLayerWeight(1, 1);
+        yield return new WaitForSeconds(1.5f);
+        animator.SetLayerWeight(1, 0);
+        PhotonView photonView = GetComponent<PhotonView>();
+        photonView.RPC("PlayTargetAnimationOthers", RpcTarget.Others, "Wolf_Sprint_Jump", true);
+        animator.SetBool("isJumping", false);
+        animator.SetBool("isInteracting", false);
     }
 }

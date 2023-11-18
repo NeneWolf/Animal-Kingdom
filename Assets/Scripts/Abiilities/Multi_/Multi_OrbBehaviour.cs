@@ -95,16 +95,18 @@ public class Multi_OrbBehaviour : MonoBehaviour, IPunObservable
         proj.GetComponent<Multi_OrbMovement>().SpawnBullet(centerTransform, self, photonView.Owner);
     }
 
-
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(powerUpVFX.activeInHierarchy);
+            stream.SendNext(this.GetComponent<MeshRenderer>().enabled);
+            stream.SendNext(this.GetComponent<SphereCollider>().enabled);
         }
         else
         {
-            powerUpVFX.SetActive((bool)stream.ReceiveNext());
+            this.GetComponent<MeshRenderer>().enabled = (bool)stream.ReceiveNext();
+            this.GetComponent<SphereCollider>().enabled = (bool)stream.ReceiveNext();
+
         }
     }
 }

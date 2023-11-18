@@ -97,6 +97,8 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
         if (!photonView.IsMine)
         {
             canvas.SetActive(!isInvisible);
+
+
             return;
         }
         else
@@ -105,132 +107,134 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
         } 
     }
 
-    public void HandleAllMovement()
-    {
-        if (photonView.IsMine)
-        {
-            if (!playerManager.ReportDead())
-            {
-                HandleFallingAndLanding();
-
-                if (playerManager.isInteracting)
-                    return;
-            }
-
-        }
-        else return;
-    }
-
-    #region OldMovement
-    //private void HandleMovement()
+    //public void HandleAllMovement()
     //{
-    //    if (isJumping) return;
-
-    //    moveDirection = transform.forward * inputManager.verticalInput;
-    //    moveDirection = moveDirection + transform.right * inputManager.horizontalInput;
-    //    moveDirection.Normalize();
-    //    moveDirection.y = 0;
-
-    //    if (isSprinting)
+    //    if (photonView.IsMine)
     //    {
-    //        moveDirection *= sprintingSpeed;
+    //        if (!playerManager.ReportDead())
+    //        {
+    //            HandleFallingAndLanding();
+
+    //            if (playerManager.isInteracting)
+    //                return;
+    //        }
+
+    //    }
+    //    else return;
+    //}
+
+    ////#region OldMovement
+    //////private void HandleMovement()
+    //////{
+    //////    if (isJumping) return;
+
+    //////    moveDirection = transform.forward * inputManager.verticalInput;
+    //////    moveDirection = moveDirection + transform.right * inputManager.horizontalInput;
+    //////    moveDirection.Normalize();
+    //////    moveDirection.y = 0;
+
+    //////    if (isSprinting)
+    //////    {
+    //////        moveDirection *= sprintingSpeed;
+    //////    }
+    //////    else
+    //////    {
+    //////        //if we sprinting /running/walking (joinstick)
+    //////        if (inputManager.moveAmount >= 0.5f) moveDirection *= runningSpeed;
+    //////        else moveDirection *= walkingSpeed;
+    //////    }
+    //////    Vector3 movementVelocity = moveDirection;
+    //////    playerRigidbody.velocity = movementVelocity;
+    //////}
+
+    //////private void HandleRotation()
+    //////{
+    //////    if (isJumping)
+    //////        return;
+
+    //////    float horizontalInput = inputManager.horizontalInput;
+
+    //////    if (Mathf.Abs(horizontalInput) > 0.1f)
+    //////    {
+    //////        float verticalInput = inputManager.verticalInput;
+
+    //////        //Calculate the input direction relative to the camera
+    //////        Vector3 cameraForward = cameraObject.forward;
+    //////        Vector3 cameraRight = cameraObject.right;
+    //////        cameraForward.y = 0;
+    //////        cameraRight.y = 0;
+    //////        cameraForward.Normalize();
+    //////        cameraRight.Normalize();
+
+    //////        Vector3 targetDirection = cameraForward * verticalInput + cameraRight * horizontalInput;
+    //////        if (targetDirection == Vector3.zero)
+    //////        targetDirection = transform.forward;
+
+    //////        // Calculate the target rotation
+    //////        Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+
+    //////        //Smoothly interpolate between the current rotation and the target rotation
+    //////        Quaternion playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+
+    //////        //Apply the new rotation
+    //////        transform.rotation = playerRotation;
+    //////    }
+    //////}
+    ////#endregion
+
+    //public void HandleFallingAndLanding()
+    //{
+    //    RaycastHit hit;
+    //    Vector3 rayCastOrigin = groundChecker.position;
+    //    rayCastOrigin.y = rayCastOrigin.y + rayCastHeightOffSet;
+
+    //    if (!isGrounded && !isJumping)
+    //    {
+    //        if (!playerManager.isInteracting)
+    //        {
+    //            photonView.RPC("PlayTargetAnimation", RpcTarget.AllViaServer, "Wolf_Fall", true);
+    //        }
+    //        //animatorManager.PlayTargetAnimation("Wolf_Fall", true);
+
+    //        inAirTimer = inAirTimer + Time.deltaTime;
+    //        playerRigidbody.AddForce(transform.forward * leapingVelocity);
+    //        playerRigidbody.AddForce(-Vector3.up * fallingVelocity * inAirTimer);
+    //    }
+
+    //    if (Physics.SphereCast(rayCastOrigin, 0.2f, Vector3.down, out hit, 0.5f, groundLayer))
+    //    {
+    //        if (!isGrounded && playerManager.isInteracting)
+    //        {
+    //            photonView.RPC("PlayTargetAnimation", RpcTarget.AllViaServer, "Wolf_Land", true);
+    //            //animatorManager.PlayTargetAnimation("Wolf_Land", true);
+    //        }
+
+    //        inAirTimer = 0;
+    //        isGrounded = true;
+    //        playerManager.isInteracting = false;
     //    }
     //    else
     //    {
-    //        //if we sprinting /running/walking (joinstick)
-    //        if (inputManager.moveAmount >= 0.5f) moveDirection *= runningSpeed;
-    //        else moveDirection *= walkingSpeed;
-    //    }
-    //    Vector3 movementVelocity = moveDirection;
-    //    playerRigidbody.velocity = movementVelocity;
-    //}
-
-    //private void HandleRotation()
-    //{
-    //    if (isJumping)
-    //        return;
-
-    //    float horizontalInput = inputManager.horizontalInput;
-
-    //    if (Mathf.Abs(horizontalInput) > 0.1f)
-    //    {
-    //        float verticalInput = inputManager.verticalInput;
-
-    //        //Calculate the input direction relative to the camera
-    //        Vector3 cameraForward = cameraObject.forward;
-    //        Vector3 cameraRight = cameraObject.right;
-    //        cameraForward.y = 0;
-    //        cameraRight.y = 0;
-    //        cameraForward.Normalize();
-    //        cameraRight.Normalize();
-
-    //        Vector3 targetDirection = cameraForward * verticalInput + cameraRight * horizontalInput;
-    //        if (targetDirection == Vector3.zero)
-    //        targetDirection = transform.forward;
-
-    //        // Calculate the target rotation
-    //        Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
-
-    //        //Smoothly interpolate between the current rotation and the target rotation
-    //        Quaternion playerRotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
-
-    //        //Apply the new rotation
-    //        transform.rotation = playerRotation;
+    //        isGrounded = false;
     //    }
     //}
-    #endregion
-
-    public void HandleFallingAndLanding()
-    {
-        RaycastHit hit;
-        Vector3 rayCastOrigin = groundChecker.position;
-        rayCastOrigin.y = rayCastOrigin.y + rayCastHeightOffSet;
-
-        if (!isGrounded && !isJumping)
-        {
-            if (!playerManager.isInteracting)
-            {
-                photonView.RPC("PlayTargetAnimation", RpcTarget.AllViaServer, "Wolf_Fall", true);
-            }
-                //animatorManager.PlayTargetAnimation("Wolf_Fall", true);
-
-            inAirTimer = inAirTimer + Time.deltaTime;
-            playerRigidbody.AddForce(transform.forward * leapingVelocity);
-            playerRigidbody.AddForce(-Vector3.up * fallingVelocity * inAirTimer);
-        }
-
-        if (Physics.SphereCast(rayCastOrigin, 0.2f, Vector3.down, out hit, 0.5f, groundLayer))
-        {
-            if (!isGrounded && playerManager.isInteracting)
-            {
-                photonView.RPC("PlayTargetAnimation", RpcTarget.AllViaServer, "Wolf_Land", true);
-                //animatorManager.PlayTargetAnimation("Wolf_Land", true);
-            }
-
-            inAirTimer = 0;
-            isGrounded = true;
-            playerManager.isInteracting = false;
-        }
-        else
-        {
-            isGrounded = false;
-        }
-    }
 
     public void HandleJump()
     {
         if (isGrounded && !isSprinting)
         {
             //isJumping = true;
-            animatorManager.animator.SetBool("isJumping", true);
+            //animatorManager.animator.SetBool("isJumping", true);
             photonView.RPC("PlayTargetAnimation", RpcTarget.AllViaServer, "Wolf_Jump_Forward", false);
+            playerManager.isInteracting = false;
             //animatorManager.PlayTargetAnimation("Wolf_Jump_Forward", false);
         }
         else if (isGrounded && isSprinting)
         {
             //isJumping = true;
-            animatorManager.animator.SetBool("isJumping", true);
+            //animatorManager.animator.SetBool("isJumping", true);
             photonView.RPC("PlayTargetAnimation", RpcTarget.AllViaServer, "Wolf_Sprint_Jump", false);
+            playerManager.isInteracting = false;
             //animatorManager.PlayTargetAnimation("Wolf_Sprint_Jump", false);
         }
     }
@@ -367,9 +371,6 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
             stream.SendNext(isGrounded);
             stream.SendNext(isJumping);
             stream.SendNext(timer);
-
-            
-
         }
         else
         {

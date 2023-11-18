@@ -100,7 +100,8 @@ public class Multi_InputManager : MonoBehaviour, IPunObservable
 
         //if (verticalInput < 0 || horizontalInput < 0) makes it positive
         //moveAmount = Mathf.Clamp01(Mathf.Abs(verticalInput) + Mathf.Abs(horizontalInput));
-        animatorManager.UpdateAnimatorValues(horizontalInput, verticalInput, playerLocomotion.isSprinting);
+        //animatorManager.UpdateAnimatorValues(horizontalInput, verticalInput, playerLocomotion.isSprinting);
+        photonView.RPC("UpdateAnimatorValues", RpcTarget.AllViaServer, horizontalInput, verticalInput, playerLocomotion.isSprinting);
     }
 
     private void HandleCameraInput()
@@ -154,6 +155,10 @@ public class Multi_InputManager : MonoBehaviour, IPunObservable
     {
         if (stream.IsWriting)
         {
+            stream.SendNext(verticalInput);
+            stream.SendNext(horizontalInput);
+
+
             stream.SendNext(sprintInput);
             stream.SendNext(jumpInput);
             stream.SendNext(isMoving);
@@ -164,6 +169,9 @@ public class Multi_InputManager : MonoBehaviour, IPunObservable
         }
         else
         {
+            verticalInput = (float)stream.ReceiveNext();
+            horizontalInput = (float)stream.ReceiveNext();
+
             sprintInput = (bool)stream.ReceiveNext();
             jumpInput = (bool)stream.ReceiveNext();
             isMoving = (bool)stream.ReceiveNext();
