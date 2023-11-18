@@ -9,6 +9,7 @@ public class Multi_InputManager : MonoBehaviour, IPunObservable
     Multi_PlayerLocomotion playerLocomotion;
     Multi_PlayerManager playerManager;
     Multi_AnimatorManager animatorManager;
+    MultiplayerLevelManager multiplayerLevelManager;
 
     public Vector2 moveInput;
     public float moveAmount;
@@ -39,6 +40,8 @@ public class Multi_InputManager : MonoBehaviour, IPunObservable
         animatorManager = GetComponent<Multi_AnimatorManager>();
         playerLocomotion = GetComponent<Multi_PlayerLocomotion>();
         playerManager = GetComponent<Multi_PlayerManager>();
+
+        multiplayerLevelManager = GameObject.FindAnyObjectByType<MultiplayerLevelManager>().GetComponent<MultiplayerLevelManager>();
     }
 
     private void OnEnable()
@@ -73,7 +76,7 @@ public class Multi_InputManager : MonoBehaviour, IPunObservable
     //Handle All the inputs and calls the functions
     public void HandleAllInputs()
     {
-        if (photonView.IsMine)
+        if (photonView.IsMine && multiplayerLevelManager.isGameOver == false)
         {
             if (!playerManager.ReportDead())
             {
@@ -85,7 +88,7 @@ public class Multi_InputManager : MonoBehaviour, IPunObservable
             HandleCameraInput();
         }
 
-        if (!playerManager.ReportDead())
+        if (!playerManager.ReportDead() && multiplayerLevelManager.isGameOver == false)
         {
             PrimaryAttack();
             SecondaryAttack();

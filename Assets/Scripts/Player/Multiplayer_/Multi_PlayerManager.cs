@@ -97,7 +97,7 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     {
         if(photonView.IsMine)
         {
-            if (!isDead)
+            if (!isDead && multiplayerLevelManager.isGameOver == false)
             {
                 inputManager.HandleAllInputs();
 
@@ -140,12 +140,6 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     {
         if (photonView.IsMine)
         {
-            //if (!isDead)
-            //{
-            //    playerLocomotion.HandleAllMovement();
-                
-            //}
-
             cameraManager.HandleAllCameraMovement();
         }
         else return;
@@ -231,16 +225,13 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
         photonView.RPC("PlayTargetAnimationOthers", RpcTarget.AllViaServer, "isDead", false);
         photonView.RPC("PlayTargetAnimationOthers", RpcTarget.AllViaServer, "isRespawning", true);
 
-        animator.SetBool("isDead", false);
-        animator.SetBool("isRespawning", true);
-
         respawnCanvas.DisplayCountDown(respawnTime, true,true);
 
         yield return new WaitForSeconds(respawnTime);
 
 
-        photonView.RPC("PlayTargetAnimationOthers", RpcTarget.AllViaServer, "isRespawning", true);
-        animator.SetBool("isRespawning", false);
+        photonView.RPC("PlayTargetAnimationOthers", RpcTarget.AllViaServer, "isRespawning", false);
+        //animator.SetBool("isRespawning", false);
 
         isDead = false;
         capsuleCollider.enabled = true;
@@ -287,4 +278,11 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
             isInteracting = (bool)stream.ReceiveNext();
         }
     }
+
+    [PunRPC]
+    public void RestartGame()
+    {
+        PhotonNetwork.LoadLevel("GameScene_Multiplayer");
+    }
+
 }

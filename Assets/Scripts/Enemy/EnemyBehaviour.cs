@@ -13,25 +13,39 @@ public class EnemyBehaviour : MonoBehaviour
     public int health = 100;
     public float currentHealth;
     bool isDead;
-    //public Slider healthBar;
+    public Slider healthBar;
 
     //MagicAttackVFX
     public float magicFireRate = 5f;
     float nextFire;
 
+    EnemyManager enemyManager;
+
     private void Awake()
     {
+        enemyManager = FindAnyObjectByType<EnemyManager>();
         currentHealth = health;
+    }
+
+    private void Update()
+    {
+        healthBar.value = currentHealth;
+
+        if(isDead)
+        {
+            enemyManager.EnemyDied();
+            Destroy(gameObject);
+        }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.tag.Equals("Player"))
+        if (other.gameObject.tag.Equals("Player") && !other.gameObject.GetComponent<PlayerLocomotion>().isInvisible && !isDead)
         {
             transform.LookAt(other.transform);
 
             float distance = Vector3.Distance(transform.position, other.transform.position);
-            if(distance > 3f && Time.time > nextFire)
+            if (distance > 3f && Time.time > nextFire)
                 MagicAttack();
         }
     }
@@ -51,6 +65,7 @@ public class EnemyBehaviour : MonoBehaviour
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
+
         if (currentHealth <= 0)
         {
             currentHealth = 0;

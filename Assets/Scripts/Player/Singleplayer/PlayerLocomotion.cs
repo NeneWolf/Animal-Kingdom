@@ -11,6 +11,7 @@ public class PlayerLocomotion : MonoBehaviour
     PlayerManager playerManager;
     AnimatorManager animatorManager;
     PlayerWeapon playerWeapon;
+    EnemyManager enemyManager;
 
     Vector3 moveDirection;
     Transform cameraObject;
@@ -66,6 +67,8 @@ public class PlayerLocomotion : MonoBehaviour
         playerManager = GetComponent<PlayerManager>();
         animatorManager = GetComponent<AnimatorManager>();
         playerWeapon = GetComponent<PlayerWeapon>();
+
+        enemyManager = FindAnyObjectByType<EnemyManager>();
     }
     //Test
 

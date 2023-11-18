@@ -188,17 +188,6 @@ public class Multi_PlayerWeapon : MonoBehaviour, IPunObservable
 
             stream.SendNext(isReloading);
             stream.SendNext(currentWeapons);
-
-
-            //stream.SendNext(weapon);
-
-            //foreach (GameObject orb in weapon)
-            //{
-            //    stream.SendNext(orb.GetComponent<MeshRenderer>().enabled);
-            //    stream.SendNext(orb.GetComponent<SphereCollider>().enabled);
-            //}
-
-            //stream.SendNext(WeaponOrbStorage.activeInHierarchy);
         }
         else
         {
@@ -206,15 +195,6 @@ public class Multi_PlayerWeapon : MonoBehaviour, IPunObservable
 
             isReloading = (bool)stream.ReceiveNext();
             currentWeapons = (int)stream.ReceiveNext();
-
-            //weapon = (List<GameObject>)stream.ReceiveNext();
-            //foreach (GameObject orb in weapon)
-            //{
-            //    orb.GetComponent<MeshRenderer>().enabled = (bool)stream.ReceiveNext();
-            //    orb.GetComponent<SphereCollider>().enabled = (bool)stream.ReceiveNext();
-            //}
-
-            //WeaponOrbStorage.SetActive((bool)stream.ReceiveNext());
         }
     }
 }

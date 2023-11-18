@@ -63,13 +63,9 @@ public class OrbMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-       if (collision.gameObject.layer == 7 || collision.gameObject.tag.Equals("Player") || collision.gameObject.tag.Equals("Enemy")) { 
+       if (collision.gameObject.layer == 7 || collision.gameObject.tag.Equals("Enemy")) { 
 
-            if (collision.gameObject.tag.Equals("Player"))
-            {
-                collision.gameObject.GetComponent<PlayerManager>().TakeDamage(damage);
-            }
-            else if (collision.gameObject.tag.Equals("Enemy"))
+            if (collision.gameObject.tag.Equals("Enemy"))
             {
                  collision.gameObject.GetComponent<EnemyBehaviour>().TakeDamage(damage);
             }

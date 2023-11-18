@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5894462451574388322}
   - component: {fileID: 1683217398322327046}
   - component: {fileID: 5002293010936276628}
+  - component: {fileID: 4318671075769197196}
   - component: {fileID: 2598176071845331260}
   m_Layer: 10
   m_Name: Multi_Sphere
@@ -130,6 +131,30 @@ MonoBehaviour:
   speed: 50
   initialAngle: 0
   powerUpVFX: {fileID: 2759807872955471466}
+--- !u!114 &4318671075769197196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6714499238237425968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 5002293010936276628}
+  - {fileID: 2598176071845331260}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!114 &2598176071845331260
 MonoBehaviour:
   m_ObjectHideFlags: 0

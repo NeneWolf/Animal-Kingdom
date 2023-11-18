@@ -50,6 +50,8 @@ MonoBehaviour:
   - PlayTargetAnimationG
   - PlayTargetAnimationOthers
   - UpdateAnimatorValues
+  - RPC_RestartGame
+  - RPC_StartGame
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

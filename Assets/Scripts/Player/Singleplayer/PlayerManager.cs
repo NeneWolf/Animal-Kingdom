@@ -9,8 +9,9 @@ public class PlayerManager : MonoBehaviour
     InputManager inputManager;
     PlayerLocomotion playerLocomotion;
     CameraManager cameraManager;
+    EnemyManager enemyManager;
 
-    [SerializeField]Slider healthSlider;
+    //[SerializeField]Slider healthSlider;
 
     [HideInInspector]
     public bool isInteracting; // Maybe to fix this later not to be public
@@ -28,6 +29,7 @@ public class PlayerManager : MonoBehaviour
     public bool canSprint = true;
     public Image staminaRefillImage;
 
+    Vector3 initialPosition;
 
     private void Awake()
     {
@@ -35,41 +37,56 @@ public class PlayerManager : MonoBehaviour
         playerLocomotion = GetComponent<PlayerLocomotion>();
         cameraManager = FindAnyObjectByType<CameraManager>();
         animator = GetComponent<Animator>();
+        enemyManager = FindAnyObjectByType<EnemyManager>();
 
         currentHealth = health;
         currentStamina = stamina;
+
+        initialPosition = transform.position;
     }
 
     private void Update()
     {
-        inputManager.HandleAllInputs();
-
-        if(currentHealth <= 0)
+        if (!enemyManager.isGameOver)
         {
-            isDead = true;
-        }
+            inputManager.HandleAllInputs();
 
-        if(currentStamina < stamina && !playerLocomotion.isSprinting)
-        {
-            // Recover stamina
-            currentStamina += stamina / timeToRecoverStamina * Time.deltaTime;
-
-            if(currentStamina >= stamina)
+            if (currentHealth <= 0)
             {
-                currentStamina = stamina;
-                canSprint = true;
+                isDead = true;
+            }
+
+            if (currentStamina < stamina && !playerLocomotion.isSprinting)
+            {
+                // Recover stamina
+                currentStamina += stamina / timeToRecoverStamina * Time.deltaTime;
+
+                if (currentStamina >= stamina)
+                {
+                    currentStamina = stamina;
+                    canSprint = true;
+                }
+            }
+
+            // Update UI
+            staminaRefillImage.fillAmount = currentStamina / stamina;
+            healthRefillImage.fillAmount = currentHealth / health;
+
+            if (isDead)
+            {
+                StartCoroutine(Respawn());
             }
         }
-
-        // Update UI
-        staminaRefillImage.fillAmount = currentStamina / stamina;
-        healthRefillImage.fillAmount = currentHealth / health;
     }
 
     private void FixedUpdate()
     {
-        playerLocomotion.HandleAllMovement();
-        cameraManager.HandleAllCameraMovement();
+        if (!enemyManager.isGameOver)
+        {
+            playerLocomotion.HandleAllMovement();
+            cameraManager.HandleAllCameraMovement();
+        }
+
     }
 
     private void LateUpdate()
@@ -106,5 +123,16 @@ public class PlayerManager : MonoBehaviour
     public bool ReportDead()
     {
         return isDead;
+    }
+
+    IEnumerator Respawn()
+    {
+        yield return new WaitForSeconds(3f);
+        transform.position = initialPosition;
+
+        animator.SetBool("isDead", false);
+        isDead = false;
+        currentHealth = health;
+        currentStamina = stamina;
     }
 }

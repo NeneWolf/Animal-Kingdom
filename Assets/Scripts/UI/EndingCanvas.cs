@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Pun.Demo.PunBasics;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,13 +13,15 @@ public class EndingCanvas : MonoBehaviour
     [SerializeField] GameObject loserText;
     [SerializeField] GameObject restartButton;
 
-    private List<Player> winners = new List<Player>();
-
     MultiplayerLevelManager multiplayerLevelManager;
     PhotonView photonView;
 
+    Player winner;
+    Player secondWinner;
+
     private void Awake()
     {
+        PhotonNetwork.AutomaticallySyncScene = true;
         multiplayerLevelManager = GameObject.FindAnyObjectByType<MultiplayerLevelManager>().GetComponent<MultiplayerLevelManager>();
     }
 
@@ -27,24 +30,24 @@ public class EndingCanvas : MonoBehaviour
         photonView = player.GetComponent<PhotonView>();
     }
 
-    public void UpdateInformation(List<Player> winners)
+    public void UpdateInformation(Player winner)
     {
-        this.winners = winners;
+        this.winner = winner;
+
         panel.SetActive(true);
 
         if(photonView.IsMine)
         {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                restartButton.SetActive(true);
-            }
-            else
-            {
-                restartButton.SetActive(false);
-            }
+            //if (PhotonNetwork.IsMasterClient)
+            //{
+            //    restartButton.SetActive(true);
+            //}
+            //else
+            //{
+            //    restartButton.SetActive(false);
+            //}
 
-
-            if (winners.Contains(PhotonNetwork.LocalPlayer))
+            if (winner == PhotonNetwork.LocalPlayer)
             {
                 UpdateWinnerText();
             }
@@ -59,12 +62,9 @@ public class EndingCanvas : MonoBehaviour
     private void UpdateWinnerText()
     {
         loserText.SetActive(false);
-        string winnerMessage = "Winners: ";
+        string winnerMessage = "Winner: ";
 
-        foreach (var winner in winners)
-        {
-            winnerMessage += winner.NickName + ", ";
-        }
+        winnerMessage += winner + ", ";
 
         winnerText.text = winnerMessage.TrimEnd(',', ' ');
     }
@@ -72,19 +72,26 @@ public class EndingCanvas : MonoBehaviour
     private void UpdateLoserText()
     {
         loserText.SetActive(true);
-        string winnerMessage = "Winners: ";
+        string winnerMessage = "Winner: ";
 
-        foreach (var winner in winners)
-        {
-            winnerMessage += winner.NickName + ", ";
-        }
+        winnerMessage += winner + ", ";
 
         winnerText.text = winnerMessage.TrimEnd(',', ' ');
     }
 
+    //private void UpdateDrawText()
+    //{
+    //    loserText.SetActive(false);
+    //    string winnerMessage = "Winners: ";
+
+    //    winnerMessage += winner.NickName + " | " + secondWinner.NickName;
+
+    //    winnerText.text = winnerMessage.TrimEnd(',', ' ');
+    //}
+
     public void RestartGame()
     {
-        PhotonNetwork.AutomaticallySyncScene = true;
-        PhotonNetwork.LoadLevel("GameScene_Multiplayer");
+       
     }
+
 }

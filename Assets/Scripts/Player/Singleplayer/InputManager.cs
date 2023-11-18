@@ -26,13 +26,16 @@ public class InputManager : MonoBehaviour
     public bool isMoving;
 
     public bool isPrimaryAttack;
-    public bool isSecondaryAttack;  
+    public bool isSecondaryAttack; 
+    
+    EnemyManager enemyManager;
 
     private void Awake()
     {
         animatorManager = GetComponent<AnimatorManager>();
         playerLocomotion = GetComponent<PlayerLocomotion>();
         playerManager = GetComponent<PlayerManager>();
+        enemyManager = FindAnyObjectByType<EnemyManager>();
     }
 
     private void OnEnable()
@@ -65,7 +68,7 @@ public class InputManager : MonoBehaviour
     //Handle All the inputs and calls the functions
     public void HandleAllInputs()
     {
-        if (!playerManager.ReportDead())
+        if (!enemyManager.isGameOver && !playerManager.ReportDead())
         {
             HandleMovementInput();
             HandleCameraInput();

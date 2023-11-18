@@ -9,6 +9,7 @@ public class MultiplayerScore : MonoBehaviourPunCallbacks
 {
     public GameObject playerScorePrefab;
     public Transform panel;
+    public GameObject panelD;
 
     Dictionary<int, GameObject> playerScore = new Dictionary<int, GameObject>();
 
@@ -20,7 +21,7 @@ public class MultiplayerScore : MonoBehaviourPunCallbacks
 
             var playerScoreObject = Instantiate(playerScorePrefab, panel);
             var playerScoreObjectText = playerScoreObject.GetComponentInChildren<TMPro.TextMeshProUGUI>();
-            playerScoreObjectText.text = string.Format("{0} Score: {1}", player.NickName, player.GetScore());
+            playerScoreObjectText.text = string.Format("{0} | Kills: {1}", player.NickName, player.GetScore());
             playerScore[player.ActorNumber] = playerScoreObject;
         }
     }
@@ -29,6 +30,17 @@ public class MultiplayerScore : MonoBehaviourPunCallbacks
     {
         var playerScoreObject = playerScore[targetPlayer.ActorNumber];
         var playerScoreObjectText = playerScoreObject.GetComponentInChildren<TMPro.TextMeshProUGUI>();
-        playerScoreObjectText.text = string.Format("{0} Score: {1}", targetPlayer.NickName, targetPlayer.GetScore());
+        playerScoreObjectText.text = string.Format("{0} | Kills: {1}", targetPlayer.NickName, targetPlayer.GetScore());
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        Destroy(playerScore[otherPlayer.ActorNumber].gameObject);
+        playerScore.Remove(otherPlayer.ActorNumber);
+    }
+
+    public void DisplayInformation()
+    {
+        panelD.SetActive(panelD.activeInHierarchy ? false : true);
     }
 }

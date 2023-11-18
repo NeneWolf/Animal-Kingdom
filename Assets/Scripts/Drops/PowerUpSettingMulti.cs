@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class PowerUpSettings : MonoBehaviour
+public class PowerUpSettingsMulti : MonoBehaviour
 {
     [SerializeField] Upgrades upgradesPower;
     [SerializeField] private GameObject uiCanvas;

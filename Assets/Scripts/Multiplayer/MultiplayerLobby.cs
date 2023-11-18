@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class MultiplayerLobby : MonoBehaviourPunCallbacks
 {
+    [SerializeField] GameObject MenuCanvas;
 
     public List<GameObject> panels;
     public InputField roomNameInput;
@@ -279,4 +280,10 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     //    Debug.Log("Clean up after player " + player);
     //    PhotonNetwork.DestroyPlayerObjects(player);
     //}
+
+    public void ReturnToMainMenu()
+    {
+        MenuCanvas.SetActive(true);
+        this.gameObject.SetActive(false);
+    }
 }

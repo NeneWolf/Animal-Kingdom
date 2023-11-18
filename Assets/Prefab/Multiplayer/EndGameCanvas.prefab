@@ -461,6 +461,7 @@ GameObject:
   - component: {fileID: 1216656402576335153}
   - component: {fileID: 5884960327936499621}
   - component: {fileID: 359812792032820116}
+  - component: {fileID: 1223313341658992673}
   m_Layer: 5
   m_Name: EndGameCanvas
   m_TagString: Untagged
@@ -509,7 +510,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_TargetDisplay: 0
 --- !u!114 &5884960327936499621
 MonoBehaviour:
@@ -551,6 +552,22 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &1223313341658992673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7015873304572570330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3cd131a961a6f440930253b4dcacf17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panel: {fileID: 8918977798824619303}
+  winnerText: {fileID: 1299162541022816}
+  loserText: {fileID: 681493134917905262}
+  restartButton: {fileID: 7789171657865715111}
 --- !u!1 &7030640317151254427
 GameObject:
   m_ObjectHideFlags: 0
@@ -697,10 +714,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 01cd679a1b9ee48bf9c546f6ce2cb97e, type: 3}
-    m_FontSize: 50
+    m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 5
+    m_MinSize: 3
     m_MaxSize: 50
     m_Alignment: 1
     m_AlignByGeometry: 0
@@ -830,9 +847,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MultiplayerLevelManager, Assembly-CSharp
-        m_MethodName: LeaveGame
+      - m_Target: {fileID: 1223313341658992673}
+        m_TargetAssemblyTypeName: EndingCanvas, Assembly-CSharp
+        m_MethodName: RestartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -859,7 +876,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6088636289154511410
 RectTransform:
   m_ObjectHideFlags: 0

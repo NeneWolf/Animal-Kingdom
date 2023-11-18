@@ -11,6 +11,9 @@ public class Upgrades : MonoBehaviour
     //AutoTarget
     [SerializeField] private float autoTargetTimer;
 
+    [SerializeField] private float healAmount;
+    [SerializeField] private float staminaAmount;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -22,24 +25,34 @@ public class Upgrades : MonoBehaviour
                     other.GetComponent<Multi_PlayerLocomotion>().HandleAutoTarget(autoTargetTimer);
                     break;
                 case "Heal":
-                    //Add code
+                        if(other.GetComponent<Multi_PlayerManager>().currentHealth + healAmount > 100)
+                            other.GetComponent<Multi_PlayerManager>().currentHealth = 100;
+                        else
+                            other.GetComponent<Multi_PlayerManager>().currentHealth += healAmount;
                     break;
                 case "Stamina":
-                    //Add code
+                        if (other.GetComponent<Multi_PlayerManager>().currentStamina + staminaAmount > 100)
+                            other.GetComponent<Multi_PlayerManager>().currentStamina = 100;
+                        else
+                            other.GetComponent<Multi_PlayerManager>().currentStamina += staminaAmount;
                     break;
                 default:
                     break;
             }
 
-
-
             IsDestroyed = true;
-            Destroy(gameObject);
+            StartCoroutine(DestroyPowerUp());
         }
     }
 
     public string GetNameOfPowerUp()
     {
         return displayedName;
+    }
+
+    IEnumerator DestroyPowerUp()
+    {
+        yield return new WaitForSeconds(0.2f);
+        Destroy(gameObject);
     }
 }
