@@ -31,6 +31,9 @@ public class PlayerManager : MonoBehaviour
 
     Vector3 initialPosition;
 
+    [Header("Audio")]
+    [SerializeField] AudioClip hitSound;
+
     private void Awake()
     {
         inputManager = GetComponent<InputManager>();
@@ -98,7 +101,9 @@ public class PlayerManager : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        if(playerLocomotion.isInvisible)
+        AudioManager.Instance.Play3D(hitSound, transform.position);
+
+        if (playerLocomotion.isInvisible)
             playerLocomotion.isGoingVisible = true;
 
         currentHealth -= damage;

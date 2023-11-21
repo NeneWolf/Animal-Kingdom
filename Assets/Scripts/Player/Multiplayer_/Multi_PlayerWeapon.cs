@@ -33,6 +33,9 @@ public class Multi_PlayerWeapon : MonoBehaviour, IPunObservable
 
     GameObject self;
 
+    [Header("Audio")]
+    [SerializeField] AudioClip shootSound;
+
     PhotonView photonView;  
 
     private void Awake()
@@ -95,6 +98,7 @@ public class Multi_PlayerWeapon : MonoBehaviour, IPunObservable
         {
             if (isReloading == false && currentWeapons > 0)
             {
+
                 findTarget = autoTarget;
 
                 if (autoTarget)
@@ -104,6 +108,7 @@ public class Multi_PlayerWeapon : MonoBehaviour, IPunObservable
                 else
                     currentTarget = null;
 
+                AudioManager.Instance.Play3D(shootSound, transform.position);
                 photonView.RPC("PlayTargetAnimation", RpcTarget.AllViaServer, "PrimaryAttack", false);
                 //animatorManager.PlayTargetAnimation("PrimaryAttack", false);
                 weapon[currentWeapons - 1].GetComponent<MeshRenderer>().enabled = false;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class ReturnToGame : MonoBehaviour
+public class ReturnToGame : MonoBehaviour, IPunObservable
 {
     PhotonView photonView;
 
@@ -45,5 +45,15 @@ public class ReturnToGame : MonoBehaviour
         PhotonNetwork.LoadLevel("GameScene_Multiplayer");
     }
 
-
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if(stream.IsWriting)
+        {
+            stream.SendNext(isLoadedCompleted);
+        }
+        else if(stream.IsReading)
+        {
+            isLoadedCompleted = (bool)stream.ReceiveNext();
+        }
+    }
 }

@@ -66,6 +66,11 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
     int currentMaterial;
     [SerializeField] GameObject playerMagicPA;
 
+    [Header("Audio")]
+    [SerializeField] AudioClip powerUpSound;
+    [SerializeField] AudioClip invisibleSound;
+
+
     PhotonView photonView;
 
     private void Awake()
@@ -264,7 +269,11 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
         if (!playerManager.ReportDead())
         {
             if (isInvisible == false)
+            {
                 isGoingInvisible = true;
+                AudioManager.Instance.Play3D(invisibleSound, transform.position);
+            }
+                
         }
 
     }
@@ -345,6 +354,7 @@ public class Multi_PlayerLocomotion : MonoBehaviour, IPunObservable
 
     IEnumerator PlayEffect()
     {
+        AudioManager.Instance.Play3D(powerUpSound, transform.position);
         powerUpEffect.SetActive(true);
         yield return new WaitForSeconds(2f);
         powerUpEffect.SetActive(false);

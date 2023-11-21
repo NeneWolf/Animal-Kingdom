@@ -12166,6 +12166,8 @@ MonoBehaviour:
   timer: 0
   canvas: {fileID: 3617787440771308195}
   playerMagicPA: {fileID: 6643457393399729858}
+  powerUpSound: {fileID: 8300000, guid: 830844770cd29f94b85b348df9613585, type: 3}
+  invisibleSound: {fileID: 8300000, guid: 7b6b33682babad5438d7b5414f5bcc87, type: 3}
 --- !u!114 &1385086575639748066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12188,6 +12190,7 @@ MonoBehaviour:
   timeToRecoverStamina: 3
   canSprint: 1
   staminaRefillImage: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: 9baf3f4fa8a9143498d4a1c77fc6d929, type: 3}
 --- !u!114 &7512771643397114058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12208,6 +12211,7 @@ MonoBehaviour:
   currentTarget: {fileID: 0}
   reloadFullChargeSkin: {fileID: 6643457393399729858}
   reloadTime: 5
+  shootSound: {fileID: 8300000, guid: 52dbfe4d39ddc7c41b9eb47a6c9e9ab8, type: 3}
 --- !u!114 &1025233734158828750
 MonoBehaviour:
   m_ObjectHideFlags: 0

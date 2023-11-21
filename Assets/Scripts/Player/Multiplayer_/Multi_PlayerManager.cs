@@ -51,6 +51,9 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     public bool canSprint = true;
     [SerializeField] Image staminaRefillImage;
 
+    [Header("Audio")]
+    [SerializeField] AudioClip hitSound;
+
     private void Awake()
     {
         if(transform.position.y < 0)
@@ -164,7 +167,9 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
 
     public void TakeDamage(Multi_OrbMovement bullet)
     {
-        if(playerLocomotion.isInvisible)
+        AudioManager.Instance.Play3D(hitSound, transform.position);
+
+        if (playerLocomotion.isInvisible)
             playerLocomotion.isGoingVisible = true;
 
         if(currentHealth - bullet.damage > 0){             
@@ -278,10 +283,10 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
         }
     }
 
-    [PunRPC]
-    public void RestartGame()
-    {
-        PhotonNetwork.LoadLevel("GameScene_Multiplayer");
-    }
+    //[PunRPC]
+    //public void RestartGame()
+    //{
+    //    PhotonNetwork.LoadLevel("GameScene_Multiplayer");
+    //}
 
 }

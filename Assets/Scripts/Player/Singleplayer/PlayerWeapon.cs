@@ -31,6 +31,9 @@ public class PlayerWeapon : MonoBehaviour
     bool isReloading;
     [SerializeField] private int reloadTime;
 
+    [Header("Audio")]
+    [SerializeField] AudioClip shootSound;
+
     private void Awake()
     {
         animatorManager = GetComponent<AnimatorManager>();
@@ -78,7 +81,7 @@ public class PlayerWeapon : MonoBehaviour
             else
                 currentTarget = null;
 
-
+            AudioManager.Instance.Play3D(shootSound, transform.position);
             animatorManager.PlayTargetAnimation("PrimaryAttack", false);
 
             

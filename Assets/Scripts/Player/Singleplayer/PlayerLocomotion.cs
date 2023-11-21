@@ -59,6 +59,10 @@ public class PlayerLocomotion : MonoBehaviour
     public bool autoTarget;
     public float timer;
 
+    [Header("Audio")]
+    [SerializeField] AudioClip powerUpSound;
+    [SerializeField] AudioClip invisibleSound;
+
     private void Awake()
     {
         inputManager = GetComponent<InputManager>();
@@ -214,7 +218,11 @@ public class PlayerLocomotion : MonoBehaviour
     public void SecondaryAttack()
     {
         if (isInvisible == false)
+        {
             isGoingInvisible = true;
+            AudioManager.Instance.Play3D(invisibleSound, transform.position);
+        }
+
     }
 
     void FadeInInvisible()
@@ -295,6 +303,7 @@ public class PlayerLocomotion : MonoBehaviour
 
     IEnumerator PlayEffect()
     {
+        AudioManager.Instance.Play3D(powerUpSound, transform.position);
         powerUpEffect.SetActive(true);
         yield return new WaitForSeconds(2f);
         powerUpEffect.SetActive(false);
