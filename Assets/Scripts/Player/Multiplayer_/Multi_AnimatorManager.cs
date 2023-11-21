@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class Multi_AnimatorManager : MonoBehaviour
 {
-    public Animator animator;
+    Animator animator;
+
     int horizontal;
     int vertical;
-
     public float speed;
 
     private void Awake()

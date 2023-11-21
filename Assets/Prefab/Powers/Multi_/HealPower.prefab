@@ -196,7 +196,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7917736027254469508}
   - component: {fileID: 3246895913825740473}
-  - component: {fileID: 1752064409168529745}
+  - component: {fileID: 4470939398621395356}
   m_Layer: 0
   m_Name: HealPower
   m_TagString: Untagged
@@ -244,7 +244,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 7.29
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1752064409168529745
+--- !u!114 &4470939398621395356
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -253,10 +253,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1290196105848559052}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb076867cdd42b34fb4ca184f75b85b4, type: 3}
+  m_Script: {fileID: 11500000, guid: 2cd30b6328a9de24898e250fb100723a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  upgradesPower: {fileID: 5410320898636890116}
+  upgradesPower: {fileID: 2785969964232029927}
   uiCanvas: {fileID: 1110537549064103238}
   powerUpName: {fileID: 7836024301592157764}
 --- !u!1 &4998919821831241310

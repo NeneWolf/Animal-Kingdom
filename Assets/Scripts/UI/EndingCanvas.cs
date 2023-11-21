@@ -38,22 +38,26 @@ public class EndingCanvas : MonoBehaviour
 
         if(photonView.IsMine)
         {
-            //if (PhotonNetwork.IsMasterClient)
-            //{
-            //    restartButton.SetActive(true);
-            //}
-            //else
-            //{
-            //    restartButton.SetActive(false);
-            //}
+            if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+            {
+                restartButton.SetActive(true);
+            }
+            else
+            {
+                restartButton.SetActive(false);
+            }
 
             if (winner == PhotonNetwork.LocalPlayer)
             {
                 UpdateWinnerText();
             }
-            else
+            else if (winner != PhotonNetwork.LocalPlayer && winner != null)
             {
                 UpdateLoserText();
+            }
+            else if(winner == null)
+            {
+                UpdateDrawText();
             }
         }
         else return;
@@ -61,37 +65,44 @@ public class EndingCanvas : MonoBehaviour
 
     private void UpdateWinnerText()
     {
-        loserText.SetActive(false);
-        string winnerMessage = "Winner: ";
+        if(winner != null)
+        {
+            loserText.SetActive(false);
+            string winnerMessage = "Winner: ";
 
-        winnerMessage += winner + ", ";
+            winnerMessage += winner + ", ";
 
-        winnerText.text = winnerMessage.TrimEnd(',', ' ');
+            winnerText.text = winnerMessage.TrimEnd(',', ' ');
+        }
     }
 
     private void UpdateLoserText()
     {
-        loserText.SetActive(true);
-        string winnerMessage = "Winner: ";
+        if (winner != null)
+        {
+            loserText.SetActive(true);
+            string winnerMessage = "Winner: ";
 
-        winnerMessage += winner + ", ";
+            winnerMessage += winner + ", ";
 
-        winnerText.text = winnerMessage.TrimEnd(',', ' ');
+            winnerText.text = winnerMessage.TrimEnd(',', ' ');
+        }
     }
 
-    //private void UpdateDrawText()
-    //{
-    //    loserText.SetActive(false);
-    //    string winnerMessage = "Winners: ";
+    private void UpdateDrawText()
+    {
+        loserText.SetActive(false);
+        string winnerMessage = "No Winners!";
 
-    //    winnerMessage += winner.NickName + " | " + secondWinner.NickName;
+        //winnerMessage += winner.NickName + " | " + secondWinner.NickName;
 
-    //    winnerText.text = winnerMessage.TrimEnd(',', ' ');
-    //}
+        winnerText.text = winnerMessage;
+    }
 
     public void RestartGame()
     {
-       
+        multiplayerLevelManager.isRestarting = true;
+        multiplayerLevelManager.RestartGame();
     }
 
 }

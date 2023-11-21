@@ -12023,7 +12023,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 670c21bc0f426fd48b0a439b8a277f76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 8090600020892442120}
   speed: 1
 --- !u!136 &6044791358555361884
 CapsuleCollider:
@@ -12180,15 +12179,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraObject: {fileID: 0}
-  healthSlider: {fileID: 7201637363546715759}
   isInteracting: 0
   currentHealth: 0
   healthRefillImage: {fileID: 0}
+  healthSlider: {fileID: 7201637363546715759}
+  respawnTime: 10
   currentStamina: 0
   timeToRecoverStamina: 3
   canSprint: 1
   staminaRefillImage: {fileID: 0}
-  respawnTime: 10
 --- !u!114 &7512771643397114058
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -827,7 +827,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7970502185853834564}
   - component: {fileID: 796469216518453967}
-  - component: {fileID: 6648607276785440558}
+  - component: {fileID: 2391383992590851182}
   m_Layer: 0
   m_Name: StaminaPower
   m_TagString: Untagged
@@ -875,7 +875,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 7.29
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6648607276785440558
+--- !u!114 &2391383992590851182
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -884,10 +884,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6300027856271564259}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb076867cdd42b34fb4ca184f75b85b4, type: 3}
+  m_Script: {fileID: 11500000, guid: 2cd30b6328a9de24898e250fb100723a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  upgradesPower: {fileID: 4697371775510735766}
+  upgradesPower: {fileID: 2638919959703922899}
   uiCanvas: {fileID: 8161030247555055121}
   powerUpName: {fileID: 4245561227774789607}
 --- !u!1 &7554680979709401557

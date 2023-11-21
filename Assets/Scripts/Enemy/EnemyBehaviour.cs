@@ -10,7 +10,7 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] GameObject positionVFX;
 
     [HideInInspector]
-    public int health = 100;
+    int health = 100;
     public float currentHealth;
     bool isDead;
     public Slider healthBar;

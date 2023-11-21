@@ -10,12 +10,24 @@ using UnityEngine.UI;
 public class Multi_PlayerManager : MonoBehaviour, IPunObservable
 {
     Animator animator;
+    PhotonView photonView;
+
     Multi_InputManager inputManager;
     Multi_PlayerLocomotion playerLocomotion;
-    public GameObject cameraObject;
     Multi_CameraManager cameraManager;
 
-    [SerializeField]Slider healthSlider;
+    Rigidbody rb;
+    RigidbodyConstraints originalConstraints;
+    CapsuleCollider capsuleCollider;
+
+    PlayerSpawnManager playerPointsSpawnManager;
+    MultiplayerLevelManager multiplayerLevelManager;
+    RespawnCanvas respawnCanvas;
+    EndingCanvas endingCanvas;
+    ScenesManager scenesManager;
+
+    //Camera
+    public GameObject cameraObject;
 
     [HideInInspector]
     public bool isInteracting; // Maybe to fix this later not to be public
@@ -25,9 +37,12 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     float health = 100f;
     public float currentHealth;
     [SerializeField] Image healthRefillImage;
-    CapsuleCollider capsuleCollider;
+
 
     bool hasStartedRespawn;
+    [SerializeField] Slider healthSlider;
+    [SerializeField] float respawnTime = 10f;
+
 
     [Header("Stamina Information")]
     float stamina = 100f;
@@ -35,20 +50,6 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     public float timeToRecoverStamina = 3f;
     public bool canSprint = true;
     [SerializeField] Image staminaRefillImage;
-
-
-    RigidbodyConstraints originalConstraints;
-
-    PhotonView photonView;
-    Rigidbody rb;
-    PlayerSpawnManager playerPointsSpawnManager;
-
-    MultiplayerLevelManager multiplayerLevelManager;
-    RespawnCanvas respawnCanvas;
-    EndingCanvas endingCanvas;
-    [SerializeField] float respawnTime = 10f;
-
-    ScenesManager scenesManager;
 
     private void Awake()
     {
@@ -163,8 +164,6 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
 
     public void TakeDamage(Multi_OrbMovement bullet)
     {
-        Debug.Log("Player took damage +1");
-
         if(playerLocomotion.isInvisible)
             playerLocomotion.isGoingVisible = true;
 

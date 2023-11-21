@@ -16,6 +16,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
     Player winner;
 
     [Header("Game Information")]
+    [SerializeField] GameObject timerTextGameObject;
     [SerializeField] Text timerText;
     [SerializeField] float TimerToEndMatch = 180f;
     bool isGameStarting;
@@ -51,6 +52,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
     {
         if (isGameStarting && !isGameOver)
         {
+            timerTextGameObject.SetActive(true);
             TimerToEndMatch -= Time.deltaTime;
 
             int seconds = (int)(TimerToEndMatch % 60);
@@ -75,17 +77,23 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
-        if (highestKillsPlayer == null)
+        if( targetPlayer.GetScore() > 0)
         {
-            highestKillsPlayer = targetPlayer;
+            if (highestKillsPlayer == null)
+            {
+                highestKillsPlayer = targetPlayer;
+            }
+            else
+            {
+                if (targetPlayer.GetScore() > highestKillsPlayer.GetScore())
+                {
+                    highestKillsPlayer = targetPlayer;
+                }
+            }
         }
         else
         {
-            if (targetPlayer.GetScore() > highestKillsPlayer.GetScore())
-            {
-                highestKillsPlayer = targetPlayer;
-                isADraw = false;
-            }
+            highestKillsPlayer = null;
         }
     }
 
@@ -135,5 +143,12 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
     {
         yield return new WaitForSeconds(1f);
         isGameStarting = true;
+    }
+
+    public void RestartGame()
+    {
+        PhotonNetwork.DestroyAll();
+        PhotonNetwork.AutomaticallySyncScene = true;
+        PhotonNetwork.LoadLevel("LoadingSceneRestart");
     }
 }

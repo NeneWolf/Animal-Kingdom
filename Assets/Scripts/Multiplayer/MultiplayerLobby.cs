@@ -12,7 +12,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     public List<GameObject> panels;
     public InputField roomNameInput;
 
-    //Player Information
+    [Header("Player Information")]
     public InputField playerNameInput;
     string playerName;
 
@@ -32,24 +32,33 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     //Random Name
     private void Start()
     {
+        //Generate a random name to be displayed in the input field
         playerNameInput.text = playerName = string.Format("Player {0}", Random.Range(1, 10000));
+
+        //Initialize the Dictionary of the room list
         cachedRoomList = new Dictionary<string, RoomInfo>();
+
+        //Automatically sync scene
         PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     public void LoginButtonClicked()
     {
+        //Set the local player name to the value of the input field
         PhotonNetwork.LocalPlayer.NickName = playerName = playerNameInput.text;
+
         //Access the PhotonNetwork class and then tell it that we wish to connect to the master server
         PhotonNetwork.ConnectUsingSettings();
     }
 
+    //Called after the local player is connected to the master server
     public override void OnConnectedToMaster()
     {
-        Debug.Log("Connected to master server");
+        //Calls to turn on the correct panel - Selection - 
         ActivatePanel("Selection");
     }
 
+    //Activates the panel that is passed in as a parameter, and deactivates all other panels
     public void ActivatePanel(string panelName)
     {
         foreach (GameObject panel in panels)
@@ -66,53 +75,64 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
 
     }
 
-    //Disconnect
+    //Disconnect from the server
     public void DisconnectButtonClick()
     {
+        //Disconnect from the Photon server
         PhotonNetwork.Disconnect();
+
+        //Turn on the Login panel back
         ActivatePanel("Login");
     }
 
+    //Photon Callbacks if the local player fails to connect (or disconnects) to the master server
     public override void OnDisconnected(DisconnectCause cause)
     {
-        Debug.Log("Disconnected from server.");
         ActivatePanel("Login");
     }
 
+
+    //Room
     //Join Room by Name
     public void JoinRoom(string roomName)
     {
         PhotonNetwork.JoinRoom(roomName);
     }
 
-
-
-    // Create Room
+    // Create a room 
     public void CreateARoom()
     {
+        //Create a new room with the name entered in the input field
         RoomOptions roomOptions = new RoomOptions();
         
+        //Set the maximum number of players that can join the room to 4
         roomOptions.MaxPlayers = 4;
+
+        //Set the room to visible in the lobby
         roomOptions.IsVisible = true;
 
+        //Creates the room on the network with the room name and room settings
         PhotonNetwork.CreateRoom(roomNameInput.text, roomOptions);
     }
 
+    //Callbacks for creating a room
     public override void OnCreatedRoom()
     {
         Debug.Log("Created room successfully");
     }
 
+    //Callbacks when the attempt to create a room fails
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         Debug.Log("Room creation failed: " + message);
     }
 
+    //Callbacks when joining a room
     public override void OnJoinedRoom()
     {
-        Debug.Log("Joined room successfully");
         ActivatePanel("InsideRoom");
 
+        //Ensures tha only the owner ( master client) can start the game
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
 
         foreach (var player in PhotonNetwork.PlayerList)
@@ -129,6 +149,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom();
     }
 
+    //Destroy the player information in the room
     public void DestroyChildren(Transform parent)
     {
         foreach (Transform child in parent)
@@ -136,26 +157,8 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
             Destroy(child.gameObject);
         }
     }
-
-    public override void OnLeftRoom()
-    {
-       Debug.Log("Left room successfully");
-       ActivatePanel("CreateRoom");
-       DestroyChildren(insideRoomPlayerList);
-    }
-
-    // Display Room List
-    public void ListRoomClicked()
-    {
-        PhotonNetwork.JoinLobby();
-    }
-
-    public override void OnJoinedLobby()
-    {
-        Debug.Log("Room list updated");
-        ActivatePanel("ListRooms");
-    }
-
+    
+    //Updates the information of the room -  the number of players in the room
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         Debug.Log("Room Update: " + roomList.Count);
@@ -177,25 +180,23 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         }
     }
 
-    // Leave Lobby
-    public void LeaveLobbyClick()
+    //Callbacks when the player leaves the room
+    public override void OnLeftRoom()
     {
-        PhotonNetwork.LeaveLobby();
+       ActivatePanel("CreateRoom");
+       DestroyChildren(insideRoomPlayerList);
     }
 
-    public override void OnLeftLobby()
+    // Display Room List
+    public void ListRoomClicked()
     {
-        Debug.Log("Left lobby successfully");
-        DestroyChildren(listRoomPanelContent);
-        DestroyChildren(insideRoomPlayerList);
-        cachedRoomList.Clear();
-        ActivatePanel("Selection");
+        PhotonNetwork.JoinLobby();
     }
 
-    //
+    // the list based on the room status
     public void UpdateCachedRoomList(List<RoomInfo> roomList)
     {
-        foreach(var room in roomList)
+        foreach (var room in roomList)
         {
             //This IF statement is going to be our conditional check. If a rooms data shows that itis closed,
             //invisible or has been removed from the list, it will be removed entirelyfrom our Dictionary.
@@ -210,16 +211,37 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         }
     }
 
+
+    //Lobby
+    //On Joining the server lobby
+    public override void OnJoinedLobby()
+    {
+        ActivatePanel("ListRooms");
+    }
+
+    // Leave Lobby
+    public void LeaveLobbyClick()
+    {
+        PhotonNetwork.LeaveLobby();
+    }
+
+    //Runs when the player leaves the lobby
+    public override void OnLeftLobby()
+    {
+        //Clean the lists
+        DestroyChildren(listRoomPanelContent);
+        DestroyChildren(insideRoomPlayerList);
+        cachedRoomList.Clear();
+
+        //Activates the panels
+        ActivatePanel("Selection");
+    }
+
+
     //Random Room
     public void OnJoinRandomRoomClicked()
     {
         PhotonNetwork.JoinRandomRoom();
-    }
-
-    public override void OnJoinRoomFailed(short returnCode, string message)
-    {
-        Debug.Log("Failed to join a Room - " + message);
-        //CreateARoom();
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
@@ -227,13 +249,10 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         Debug.Log("Failed to join a random room -" + message);
     }
 
-    //
+    //When a player has entered the room
     public override void OnPlayerEnteredRoom (Photon.Realtime.Player newPlayer)
     {
-        Debug.Log("New player joined the room");
-
-
-        //Similarly to the OnJoinedRoom() method where we list allthe names of the players in the room
+        //Similarly to the OnJoinedRoom() method where we list all the names of the players in the room
         var playerListEntry = Instantiate(textPrefab, insideRoomPlayerList);
         playerListEntry.GetComponent<Text>().text = newPlayer.NickName;
 
@@ -241,6 +260,9 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         playerListEntry.name = newPlayer.NickName;
     }
 
+
+    //General
+    //When the player has left the room
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
         Debug.Log("Player left the room");
@@ -259,6 +281,7 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         }
     }
 
+    //Switching Master client in the room
     public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
     {
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
@@ -266,20 +289,18 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
 
     public void StartGameClicked()
     {
+        //Checks if the number of players in the room is between 2 and 4
         if (PhotonNetwork.CurrentRoom.PlayerCount >= 2 && PhotonNetwork.CurrentRoom.PlayerCount <= 4)
         {
+            //Update the room properties
             PhotonNetwork.CurrentRoom.IsOpen = false;
             PhotonNetwork.CurrentRoom.IsVisible = false;
+
+            //Load the game scene
             PhotonNetwork.LoadLevel("GameScene_Multiplayer");
         }
 
     }
-
-    //public void OnPlayerDisconnected(PhotonNetwork player)
-    //{
-    //    Debug.Log("Clean up after player " + player);
-    //    PhotonNetwork.DestroyPlayerObjects(player);
-    //}
 
     public void ReturnToMainMenu()
     {
