@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class MultiplayerLobby : MonoBehaviourPunCallbacks
 {
     [SerializeField] GameObject MenuCanvas;
+    [SerializeField] GameObject CreditsCanvas;
 
     public List<GameObject> panels;
     public InputField roomNameInput;
@@ -28,6 +29,8 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
 
     //
     public  GameObject startGameButton;
+
+
 
     //Random Name
     private void Start()
@@ -306,5 +309,16 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     {
         MenuCanvas.SetActive(true);
         this.gameObject.SetActive(false);
+
+        if (CreditsCanvas.activeSelf == true)
+            CreditsCanvas.SetActive(false);
     }
+
+    public void CreditsButton()
+    {
+        CreditsCanvas.SetActive(true);
+        MenuCanvas.SetActive(false);
+    }
+
+    
 }
