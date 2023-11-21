@@ -54,13 +54,10 @@ public class Multi_PlayerManager : MonoBehaviour, IPunObservable
     [Header("Audio")]
     [SerializeField] AudioClip hitSound;
 
+    bool tempFixing;
+
     private void Awake()
     {
-        if(transform.position.y < 0)
-        {
-              transform.position = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
-        }
-
         photonView = GetComponent<PhotonView>();
         capsuleCollider = GetComponent<CapsuleCollider>();
         rb = GetComponent<Rigidbody>();

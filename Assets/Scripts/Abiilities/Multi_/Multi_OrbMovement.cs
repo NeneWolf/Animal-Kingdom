@@ -62,7 +62,7 @@ public class Multi_OrbMovement : MonoBehaviour
     {
         transform.LookAt(target.transform);
         transform.parent = null;
-        transform.position = Vector3.MoveTowards(transform.position, target.transform.position, fireSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, new Vector3(target.transform.position.x, target.transform.position.y + 0.2f, target.transform.position.z), fireSpeed * Time.deltaTime);
     }
 
     private void OnCollisionEnter(Collision collision)

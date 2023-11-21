@@ -5867,8 +5867,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.23327626, y: 0.028043795, z: 0.78963196}
-  m_Center: {x: -0.00000033527613, y: -0.006894063, z: 0.24727112}
+  m_Size: {x: 0.23327626, y: 0.06491551, z: 0.76475585}
+  m_Center: {x: -0.00000033527613, y: 0.027074078, z: 0.23483306}
 --- !u!1 &3994528715565911155
 GameObject:
   m_ObjectHideFlags: 0
@@ -12043,7 +12043,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.4
+  m_Radius: 0.46
   m_Height: 1.68
   m_Direction: 2
   m_Center: {x: 0.034346804, y: 0.48, z: 0.27000004}
