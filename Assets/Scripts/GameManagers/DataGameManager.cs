@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using Leguar.TotalJSON;
+using PlayFab;
+using PlayFab.ClientModels;
 
 public class DataGameManager : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public class DataGameManager : MonoBehaviour
     [SerializeField]ProfileDataDisplay profileDataDisplay;
     public PlayerData playerData;
     public string fileName = "playerData.txt";
+    public GlobalLeaderboard globalLeaderboard;
 
     private void Awake()
     {
@@ -26,7 +29,28 @@ public class DataGameManager : MonoBehaviour
     private void Start()
     {
         LoadPlayerData();
+        LoginToPlayFab();
+    }
 
+    void LoginToPlayFab()
+    {
+        LoginWithCustomIDRequest request = new LoginWithCustomIDRequest()
+        {
+            CreateAccount = true,
+            CustomId = playerData.uID,
+        };
+
+        PlayFabClientAPI.LoginWithCustomID(request, PlayFabLoginResult, PlayFabLoginError);
+    }
+
+    void PlayFabLoginResult(LoginResult loginResult)
+    {
+        Debug.Log("PlayFab Login Successful - " + loginResult.ToJson());
+    }
+
+    void PlayFabLoginError(PlayFabError loginError)
+    {
+        Debug.Log("PlayFab Login Failed - " + loginError.ErrorMessage);
     }
 
     public void SavePlayerData()

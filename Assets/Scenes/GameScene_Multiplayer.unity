@@ -34303,6 +34303,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1357122350}
   - component: {fileID: 1357122349}
+  - component: {fileID: 1357122351}
   m_Layer: 0
   m_Name: DataGameManager
   m_TagString: Untagged
@@ -34322,7 +34323,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c95424e2b933fea45bfd02e745e1d6e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  profileDataDisplay: {fileID: 0}
   fileName: playerData.txt
+  globalLeaderboard: {fileID: 1357122351}
 --- !u!4 &1357122350
 Transform:
   m_ObjectHideFlags: 0
@@ -34338,6 +34341,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 805078713}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1357122351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357122348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82f70896fce51d8449311ea9c2ceac3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1358599544
 GameObject:
   m_ObjectHideFlags: 0

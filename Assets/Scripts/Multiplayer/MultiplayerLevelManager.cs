@@ -6,6 +6,8 @@ using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System;
+using JetBrains.Annotations;
+using Photon.Pun.Demo.PunBasics;
 
 public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 {
@@ -166,6 +168,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
             playerData.totalPlayersInGame = PhotonNetwork.CurrentRoom.PlayerCount;
             playerData.roomName = PhotonNetwork.CurrentRoom.Name;
 
+            DataGameManager.instance.globalLeaderboard.SubmitScore(currentPersonalBest);
             DataGameManager.instance.SavePlayerData();
         }
     }
