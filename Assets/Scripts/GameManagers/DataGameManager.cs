@@ -5,6 +5,8 @@ using System.IO;
 using Leguar.TotalJSON;
 using PlayFab;
 using PlayFab.ClientModels;
+using System.Text;
+using System;
 
 public class DataGameManager : MonoBehaviour
 {
@@ -57,12 +59,13 @@ public class DataGameManager : MonoBehaviour
     {
         print("Created file: " + fileName);
         string serializedDataString = JSON.Serialize(playerData).CreateString();
-        File.WriteAllText(fileName, serializedDataString);
+        //Convert the string to a byte array
+        File.WriteAllText(fileName, Convert.ToBase64String(Encoding.UTF8.GetBytes(serializedDataString)));
     }
 
     public void LoadPlayerData()
     {
-        if(!File.Exists(fileName))
+        if (!File.Exists(fileName))
         {
             playerData = new PlayerData();
             SavePlayerData();
@@ -70,12 +73,13 @@ public class DataGameManager : MonoBehaviour
         else
         {
             string serializedDataString = File.ReadAllText(fileName);
-            playerData = JSON.ParseString(serializedDataString).Deserialize<PlayerData>();
+            playerData = JSON.ParseString(Encoding.UTF8.GetString(Convert.FromBase64String(serializedDataString))).Deserialize<PlayerData>();
             print("Loaded file: " + fileName);
         }
 
         UpdateProfileData();
     }
+
 
     void UpdateProfileData()
     {
