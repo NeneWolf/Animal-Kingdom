@@ -6,6 +6,9 @@ using PlayFab.ClientModels;
 
 public class GlobalLeaderboard : MonoBehaviour
 {
+    int maxResultsCount = 5;
+    public LeaderboardPopUp leaderboardPopUp;
+
     public void SubmitScore(int playScore)
     {
         UpdatePlayerStatisticsRequest request = new UpdatePlayerStatisticsRequest()
@@ -48,6 +51,7 @@ public class GlobalLeaderboard : MonoBehaviour
     void PlayFabGetLeaderboardResult(GetLeaderboardResult getLeaderboardResult)
     {
         Debug.Log("Successfully retrieved leaderboard");
+        leaderboardPopUp.UpdateUI(getLeaderboardResult.Leaderboard);
     }
 
     void PlayFabGetLeaderboardError(PlayFabError getLeaderboardError)

@@ -35,6 +35,8 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
     bool isADraw;
 
+    public ChatInputManager chatInputManager;
+
     [HideInInspector]
     public Photon.Realtime.Player owner;
 
@@ -109,11 +111,13 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
     public void LeaveGame()
     {
+        chatInputManager.DisableChat();
         PhotonNetwork.LeaveRoom();
     }
 
     public override void OnLeftRoom()
     {
+        chatInputManager.DisableChat();
         PhotonNetwork.Disconnect();
     }
 

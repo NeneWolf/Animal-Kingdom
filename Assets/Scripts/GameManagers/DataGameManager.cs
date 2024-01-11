@@ -32,6 +32,7 @@ public class DataGameManager : MonoBehaviour
     {
         LoadPlayerData();
         LoginToPlayFab();
+       
     }
 
     void LoginToPlayFab()
@@ -43,6 +44,26 @@ public class DataGameManager : MonoBehaviour
         };
 
         PlayFabClientAPI.LoginWithCustomID(request, PlayFabLoginResult, PlayFabLoginError);
+    }
+
+    void UpdateDisplayName()
+    {
+        UpdateUserTitleDisplayNameRequest request = new UpdateUserTitleDisplayNameRequest()
+        {
+            DisplayName = playerData.username,
+        };
+
+        PlayFabClientAPI.UpdateUserTitleDisplayName(request, PlayFabUpdateDisplayNameResult, PlayFabUpdateDisplayNameError);
+    }
+
+    private void PlayFabUpdateDisplayNameError(PlayFabError error)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void PlayFabUpdateDisplayNameResult(UpdateUserTitleDisplayNameResult result)
+    {
+        throw new NotImplementedException();
     }
 
     void PlayFabLoginResult(LoginResult loginResult)
@@ -57,10 +78,12 @@ public class DataGameManager : MonoBehaviour
 
     public void SavePlayerData()
     {
-        print("Created file: " + fileName);
         string serializedDataString = JSON.Serialize(playerData).CreateString();
+
         //Convert the string to a byte array
         File.WriteAllText(fileName, Convert.ToBase64String(Encoding.UTF8.GetBytes(serializedDataString)));
+
+        UpdateDisplayName();
     }
 
     public void LoadPlayerData()
@@ -73,8 +96,8 @@ public class DataGameManager : MonoBehaviour
         else
         {
             string serializedDataString = File.ReadAllText(fileName);
+
             playerData = JSON.ParseString(Encoding.UTF8.GetString(Convert.FromBase64String(serializedDataString))).Deserialize<PlayerData>();
-            print("Loaded file: " + fileName);
         }
 
         UpdateProfileData();

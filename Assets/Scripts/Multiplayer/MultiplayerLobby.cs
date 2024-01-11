@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class MultiplayerLobby : MonoBehaviourPunCallbacks
 {
     [SerializeField] GameObject MenuCanvas;
+    [SerializeField] GameObject Profile;
     [SerializeField] GameObject CreditsCanvas;
 
     public List<GameObject> panels;
@@ -343,5 +344,17 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         MenuCanvas.SetActive(false);
     }
 
-    
+    //
+    public void OpenProfile()
+    {
+        MenuCanvas.SetActive(false);
+        Profile.SetActive(true);
+
+    }
+
+    public void CloseProfile()
+    {
+        MenuCanvas.SetActive(true);
+        Profile.SetActive(false);
+    }
 }
