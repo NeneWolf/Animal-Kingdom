@@ -54,6 +54,10 @@ public class ChatInputManager : MonoBehaviour
 
             OpenChat();
         }
+        else if(chatDisplay.activeSelf && Input.GetKeyDown(KeyCode.Return))
+        {
+            FocusChatInput();
+        }
 
         if (chatInput.interactable == true && Input.GetKeyDown(KeyCode.Return))
         {
@@ -72,6 +76,13 @@ public class ChatInputManager : MonoBehaviour
 
         //if (chatIcon != null)
         //    chatIcon.SetActive(false);
+    }
+
+    public void OpenChatOnNewMessage()
+    {
+        chatDisplay.SetActive(true);
+        time = 5f;
+        disableChat = true;
     }
 
     void FocusChatInput()

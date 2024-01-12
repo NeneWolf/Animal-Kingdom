@@ -14,17 +14,21 @@ public class ProfileDataDisplay : MonoBehaviour
     [SerializeField] Text fieldTotalPlayers;
     [SerializeField] Text fieldRoomName;
 
-    public void LoadProfileData()
+    public void LoadProfileData(PlayerData playerData)
     {
-        PlayerData playerData = DataGameManager.instance.playerData;
+        //PlayerData playerData = DataGameManager.instance.playerData;
 
-        if(playerData.username != null)
+        if(playerData.bestScore > 0)
         {
             NoAvailableRecordTextG.gameObject.SetActive(false);
+            print("here");
+            print(playerData.bestScore);
+
             foreach (GameObject g in OtherData)
             {
                 g.gameObject.SetActive(true);
             }
+
             fieldName.text = playerData.username;
             fieldBestScore.text = playerData.bestScore.ToString();
             fieldDate.text = playerData.bestScoreDate;
@@ -34,6 +38,7 @@ public class ProfileDataDisplay : MonoBehaviour
         else
         {
             NoAvailableRecordTextG.gameObject.SetActive(true);
+            print("Should be here");
             foreach (GameObject g in OtherData)
             {
                 g.gameObject.SetActive(false);

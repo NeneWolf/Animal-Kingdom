@@ -9710,6 +9710,7 @@ MonoBehaviour:
   userName: 
   inputField: {fileID: 979732902}
   chatContent: {fileID: 1457432361}
+  chatInputManager: {fileID: 866264337}
 --- !u!1 &1378924563
 GameObject:
   m_ObjectHideFlags: 0

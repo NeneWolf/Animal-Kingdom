@@ -32,7 +32,7 @@ public class DataGameManager : MonoBehaviour
     {
         LoadPlayerData();
         LoginToPlayFab();
-       
+
     }
 
     void LoginToPlayFab()
@@ -69,6 +69,7 @@ public class DataGameManager : MonoBehaviour
     void PlayFabLoginResult(LoginResult loginResult)
     {
         Debug.Log("PlayFab Login Successful - " + loginResult.ToJson());
+        UpdateDisplayName();
     }
 
     void PlayFabLoginError(PlayFabError loginError)
@@ -82,7 +83,6 @@ public class DataGameManager : MonoBehaviour
 
         //Convert the string to a byte array
         File.WriteAllText(fileName, Convert.ToBase64String(Encoding.UTF8.GetBytes(serializedDataString)));
-
         UpdateDisplayName();
     }
 
@@ -96,19 +96,19 @@ public class DataGameManager : MonoBehaviour
         else
         {
             string serializedDataString = File.ReadAllText(fileName);
-
             playerData = JSON.ParseString(Encoding.UTF8.GetString(Convert.FromBase64String(serializedDataString))).Deserialize<PlayerData>();
         }
 
-        UpdateProfileData();
+        UpdateProfileData(playerData);
     }
 
 
-    void UpdateProfileData()
+    void UpdateProfileData(PlayerData playerData)
     {
         if (profileDataDisplay != null)
         {
-            profileDataDisplay.LoadProfileData();
+            profileDataDisplay.LoadProfileData(playerData);
+
         }
         
     }

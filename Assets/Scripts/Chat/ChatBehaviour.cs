@@ -14,6 +14,9 @@ public class ChatBehaviour : MonoBehaviour, IChatClientListener
     public InputField inputField;
     public Text chatContent;
 
+    public ChatInputManager chatInputManager;
+
+
     void Start()
     {
         chatClient = new ChatClient(this);
@@ -52,6 +55,7 @@ public class ChatBehaviour : MonoBehaviour, IChatClientListener
         if(chatClient.TryGetChannel(PhotonNetwork.CurrentRoom.Name, out currentChat))
         {
             chatContent.text = currentChat.ToStringMessages();  
+            chatInputManager.OpenChatOnNewMessage();
         }
     }
 
@@ -79,17 +83,17 @@ public class ChatBehaviour : MonoBehaviour, IChatClientListener
         }
     }
 
-    public void OnUnsubscribed(string[] channels)
-    {
-        //throw new System.NotImplementedException();
-    }
-
     public void OnUserSubscribed(string channel, string user)
     {
        // throw new System.NotImplementedException();
     }
 
     public void OnUserUnsubscribed(string channel, string user)
+    {
+        //throw new System.NotImplementedException();
+    }
+
+    public void OnUnsubscribed(string[] channels)
     {
         //throw new System.NotImplementedException();
     }
