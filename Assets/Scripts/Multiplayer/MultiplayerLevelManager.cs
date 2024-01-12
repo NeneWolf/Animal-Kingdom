@@ -1,12 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using TMPro;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System;
+using JetBrains.Annotations;
+using Photon.Pun.Demo.PunBasics;
 
 public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 {
@@ -34,6 +35,8 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
     bool isADraw;
 
+    public ChatInputManager chatInputManager;
+
     [HideInInspector]
     public Photon.Realtime.Player owner;
 
@@ -45,7 +48,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
     void Start()
     {
         StartCoroutine(StartGameTimer());
-        PhotonNetwork.Instantiate(playerPrefab.name, playerSpawnPoint[Random.Range(0, playerSpawnPoint.Length)].transform.position, Quaternion.identity);
+        PhotonNetwork.Instantiate(playerPrefab.name, playerSpawnPoint[UnityEngine.Random.Range(0, playerSpawnPoint.Length)].transform.position, Quaternion.identity);
     }
 
     private void Update()
@@ -72,6 +75,7 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
         {
             winner = highestKillsPlayer;
             DisplayGameOverPopup();
+            StorePersonalBest();
         }
     }
 
@@ -107,11 +111,13 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
 
     public void LeaveGame()
     {
+        chatInputManager.DisableChat();
         PhotonNetwork.LeaveRoom();
     }
 
     public override void OnLeftRoom()
     {
+        chatInputManager.DisableChat();
         PhotonNetwork.Disconnect();
     }
 
@@ -150,5 +156,24 @@ public class MultiplayerLevelManager : MonoBehaviourPunCallbacks
         PhotonNetwork.DestroyAll();
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.LoadLevel("LoadingSceneRestart");
+    }
+
+    void StorePersonalBest()
+    {
+        int currentPersonalBest = PhotonNetwork.LocalPlayer.GetScore();
+        print(currentPersonalBest);
+        PlayerData playerData = DataGameManager.instance.playerData;
+
+        if(currentPersonalBest > playerData.bestScore)
+        {
+            playerData.username = PhotonNetwork.LocalPlayer.NickName;
+            playerData.bestScore = currentPersonalBest;
+            playerData.bestScoreDate = DateTime.UtcNow.ToString("dd/MM/yyyy");
+            playerData.totalPlayersInGame = PhotonNetwork.CurrentRoom.PlayerCount;
+            playerData.roomName = PhotonNetwork.CurrentRoom.Name;
+
+            DataGameManager.instance.globalLeaderboard.SubmitScore(currentPersonalBest);
+            DataGameManager.instance.SavePlayerData();
+        }
     }
 }

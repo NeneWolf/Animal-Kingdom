@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class MultiplayerLobby : MonoBehaviourPunCallbacks
 {
     [SerializeField] GameObject MenuCanvas;
+    [SerializeField] GameObject Profile;
     [SerializeField] GameObject CreditsCanvas;
 
     public List<GameObject> panels;
@@ -30,6 +31,9 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     //
     public  GameObject startGameButton;
 
+    //Chat
+    public ChatBehaviour chat;
+    public GameObject chatPanel;
 
 
     //Random Name
@@ -69,10 +73,21 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
             if (panel.name == panelName)
             {
                 panel.SetActive(true);
+
+                if(panel.name == "InsideRoom")
+                {
+                    chatPanel.SetActive(true);
+                }
+                else
+                {
+                    chatPanel.SetActive(false);
+                }
             }
             else
             {
                 panel.SetActive(false);
+                chatPanel.SetActive(false);
+
             }
         }
 
@@ -133,6 +148,12 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     //Callbacks when joining a room
     public override void OnJoinedRoom()
     {
+        //Chat
+        var authentificationValues = new Photon.Chat.AuthenticationValues(PhotonNetwork.LocalPlayer.NickName);
+        chat.userName = PhotonNetwork.LocalPlayer.NickName;
+        chat.chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat, "1.0", authentificationValues);
+
+
         ActivatePanel("InsideRoom");
 
         //Ensures tha only the owner ( master client) can start the game
@@ -186,6 +207,9 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
     //Callbacks when the player leaves the room
     public override void OnLeftRoom()
     {
+        //Disconnect from the chat server
+       chat.chatClient.Disconnect();
+
        ActivatePanel("CreateRoom");
        DestroyChildren(insideRoomPlayerList);
     }
@@ -320,5 +344,17 @@ public class MultiplayerLobby : MonoBehaviourPunCallbacks
         MenuCanvas.SetActive(false);
     }
 
-    
+    //
+    public void OpenProfile()
+    {
+        MenuCanvas.SetActive(false);
+        Profile.SetActive(true);
+
+    }
+
+    public void CloseProfile()
+    {
+        MenuCanvas.SetActive(true);
+        Profile.SetActive(false);
+    }
 }
